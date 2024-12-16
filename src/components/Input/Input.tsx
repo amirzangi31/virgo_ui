@@ -64,7 +64,7 @@ export default function Input({
   name,
   onChange,
   onFocus,
-  isDisabled = true,
+  isDisabled = false,
   className = "",
   label,
   errorClassName,

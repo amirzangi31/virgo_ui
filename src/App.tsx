@@ -21,10 +21,10 @@ const App = () => {
                         }} >
                         test
                   </Button>
-                  <div className='mt-4 bg-red-700'>
-                        <Input variant="default" size="md" placeholder="شماره همراه خود را وارد کنید" label="شماره همراه" />
+                  <div className='mt-4 '>
+                        <Input variant="error" size="md" placeholder="شماره همراه خود را وارد کنید" label="شماره همراه" />
                         <IconButton />
-                        <IconButtonBack />
+                        <IconButtonBack color='purple' svgColor='danger' />
                         <InputOtp variant="default" />
                   </div>
             </div>

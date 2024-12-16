@@ -8,9 +8,7 @@ export default {
     extend: {
       colors: {
         primary: "#007E7B",
-<<<<<<< HEAD
-        secondary: "red"
-=======
+        secondary : "",
         gray: {
           100: "#EFF1F0",
           200: "#E6E9E8",
@@ -25,13 +23,13 @@ export default {
           700: "#f8f8f8",
           800: "#79767A",
         },
+        
         error: {
           light: "#FFEFEF",
           100: "#FB6C6C",
           DEFAULT: "#E0342A",
           dark: "#CE1B1B",
         }
->>>>>>> 8fda717d82c536fc667d300d5932d3ab96666765
       }
     },
   },
