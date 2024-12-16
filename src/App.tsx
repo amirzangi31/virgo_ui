@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { Button } from './components'
-import { Loader } from './components/Loader'
-
+import Input from './components/Input/Input'
+import IconButton from './components/ButtonClose/ButtonClose';
+import IconButtonBack from './components/ButtonBack/ButtonBack';
+import InputOtp from './components/InputOtp/InputOtp';
 const App = () => {
       const [loading, setLoading] = useState(false)
       return (
-            <div className='w-full h-screen flex justify-center items-center gap-2' >
+            <div className='w-full h-screen flex-1 justify-center items-center'>
                   <Button
                         variant='default'
                         size='sm'
@@ -19,22 +21,14 @@ const App = () => {
                         }} >
                         test
                   </Button>
-                  <Button
-                        variant='primary_outlined'
-                        size='sm'
-                        isLoading={loading}
-                        isDisabled={loading}
-                        loader={<Loader  variant='primary'  />}
-                        onClick={() => {
-                              setLoading(true)
-                              setTimeout(() => {
-                                    setLoading(false)
-                              }, 2000);
-                        }} >
-                        test
-                  </Button>
-                  <Loader label='test' variant='primary' size="sm" />
+                  <div className='mt-4 bg-red-700'>
+                        <Input variant="default" size="md" placeholder="شماره همراه خود را وارد کنید" label="شماره همراه" />
+                        <IconButton />
+                        <IconButtonBack />
+                        <InputOtp variant="default" />
+                  </div>
             </div>
+
       )
 }
 
