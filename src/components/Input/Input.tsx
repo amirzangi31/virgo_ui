@@ -12,9 +12,9 @@ const InputVariants = cva(
         lg: "text-lg px-4 py-3",
       },
       variant: {
-        default: "border border-gray focus:ring focus:ring-gray-200",
-        error: "border border-red-500 focus:ring focus:ring-red-200",
-        success: "border border-green-500 focus:ring focus:ring-green-200",
+        default: "border border-gray  focus:border-gray-200 ",
+        error: "border border-error  focus:border-error ",
+        success: "border border-green-500  focus:border-green-500 ",
       },
       rounded: {
         sm: "rounded-sm",
@@ -22,6 +22,10 @@ const InputVariants = cva(
         lg: "rounded-lg",
         full: "rounded-full",
       },
+      isDisabled: {
+        false: "",
+        true: "bg-error border-none "
+      }
     },
     defaultVariants: {
       size: "sm",
@@ -34,6 +38,7 @@ type InputVariantsProps = {
   size?: 'sm' | 'md' | 'lg';
   variant?: 'default' | 'error' | 'success';
   rounded?: 'sm' | 'md' | 'lg' | 'full';
+  disabled?: boolean
 };
 
 type InputProps = InputVariantsProps & {
@@ -41,9 +46,13 @@ type InputProps = InputVariantsProps & {
   value?: string;
   name?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   isDisabled?: boolean;
   className?: string;
   label?: string; // اضافه کردن label به پروپ‌ها
+  errorClassName?: string
+  labelClassName?: string
+  errorText?: string
 };
 
 export default function Input({
@@ -54,27 +63,39 @@ export default function Input({
   value = "",
   name,
   onChange,
-  isDisabled = false,
+  onFocus,
+  isDisabled = true,
   className = "",
   label,
+  errorClassName,
+  labelClassName,
+  errorText
 }: InputProps): JSX.Element {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col relative">
       {label && (
-        <label htmlFor={name} className="my-2 text-sm font-bold text-black px-2">
+        <label htmlFor={name} className={cn(
+          "my-2 text-sm font-bold text-black px-2 text-right ltr:text-left ",
+          labelClassName
+        )}>
           {label}
         </label>
       )}
       <input
-        id={name} 
+        id={name}
         type="tel"
         name={name}
         value={value}
+        onFocus={onFocus}
         onChange={onChange}
         placeholder={placeholder}
         disabled={isDisabled}
-        className={cn(InputVariants({ size, variant, rounded }), className)}
+        className={cn(InputVariants({ size, variant, rounded, isDisabled }), className)}
       />
+      <p className={cn(
+        "text-error absolute top-full right-0 ltr:left-0  text-sm px-4",
+        errorClassName
+      )}>{errorText}</p>
     </div>
   );
 }
