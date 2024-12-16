@@ -1,0 +1,33 @@
+.perspective {
+  perspective: 48.75rem;
+}
+
+@keyframes loadingCircleOne {
+  0% {
+    transform: rotateX(40deg) rotateY(-40deg) rotateZ(0deg);
+  }
+
+  100% {
+    transform: rotateX(40deg) rotateY(-40deg) rotateZ(360deg);
+  }
+}
+
+@keyframes loadingCircleTwo {
+  0% {
+    transform: rotateX(50deg) rotateY(15deg) rotateZ(0deg);
+  }
+
+  100% {
+    transform: rotateX(50deg) rotateY(15deg) rotateZ(360deg);
+  }
+}
+
+@keyframes loadingCircleThree {
+  0% {
+    transform: rotateX(15deg) rotateY(50deg) rotateZ(0deg);
+  }
+
+  100% {
+    transform: rotateX(15deg) rotateY(50deg) rotateZ(360deg);
+  }
+}
