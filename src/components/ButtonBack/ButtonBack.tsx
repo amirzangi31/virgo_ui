@@ -1,11 +1,13 @@
 import React from 'react';
 import { cva } from 'class-variance-authority';
 import cn from '../../utils/cnFun';
+import { ColorType, RoundedType, SizeType, SvgColorType } from '../../types/GlobalType';
+import { ReactNode } from 'react';
 type IconButtonVariantsProps = {
-  size?: 'sm' | 'md' | 'lg';
-  rounded?: 'sm' | 'md' | 'full';
-  color?: "primary" | "secondary" | "warning" | "danger" | "inverse" | "success" | "purple" | "default" | "white";
-  svgColor?: "primary" | "secondary" | "warning" | "danger" | "inverse" | "success" | "purple" | "default" | "white"
+  size?: SizeType;
+  rounded?: RoundedType
+  color?: ColorType
+  svgColor?: SvgColorType
 };
 const IconButtonBack = cva(
   "flex justify-center items-center cursor-pointer transition-all duration-300",
@@ -15,11 +17,13 @@ const IconButtonBack = cva(
         sm: "w-[2rem] h-[2rem]",
         md: "w-[2.5rem] h-[2.5rem]",
         lg: "w-[3rem] h-[3rem]",
+
       },
       rounded: {
         full: "rounded-full",
         md: "rounded-md",
         sm: "rounded-sm",
+        lg: "rounded-lg"
       },
       color: {
         primary: "bg-primary",
@@ -59,29 +63,35 @@ type IconButtonProps = IconButtonVariantsProps & {
   onClick?: () => void;
   children?: React.ReactNode;
   className?: string;
+  svg?: ReactNode
 };
 
 export default function IconButton({
-  size,
-  rounded,
+  size = "sm",
+  rounded = "full",
   color,
   onClick,
   children,
   className = "",
-  svgColor
+  svgColor,
+  svg
 }: IconButtonProps): JSX.Element {
   return (
     <div
       onClick={onClick}
       className={cn(IconButtonBack({ size, rounded, color }), className)}
     >
-      <svg width="10" height="16" viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 1L8.5 8L1.5 15" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-        className={cn(
-          "stroke-primary",
-          IconButtonBack({ svgColor })
-        )}
+      {
+        svg ? svg : (
+          <svg width="10" height="16" viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 1L8.5 8L1.5 15" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+            className={cn(
+              "stroke-primary",
+              IconButtonBack({ svgColor })
+            )}
 
-      ></path></svg>
+          ></path></svg>
+        )
+      }
       {children}
     </div>
   );
