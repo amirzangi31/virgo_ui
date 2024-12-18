@@ -5,6 +5,7 @@ import IconButton from './components/ButtonClose/ButtonClose';
 import IconButtonBack from './components/ButtonBack/ButtonBack';
 import InputOtp from './components/InputOtp/InputOtp';
 import Modal from './components/modal/Modal';
+import { Loader } from './components/Loader';
 const App = () => {
       const [loading, setLoading] = useState(false)
       const [modal, setModal] = useState(false)
@@ -31,9 +32,7 @@ const App = () => {
                         <IconButtonBack color='purple' svgColor='danger' />
                         <InputOtp variant="default" />
                   </div>
-
-
-                  <Button onClick={() => setModal(true)} variant='primary' size='sm'>
+                  <Button   onClick={() => setModal(true)} variant='primary' size='sm'>
                         Open Modal
                   </Button>
 
