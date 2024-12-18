@@ -8,8 +8,6 @@ type size = "sm" | "md" | "lg"
 type rounded = "sm" | "md" | "lg" | "full"
 
 
-
-
 type ButtonVariantsProps = {
       variant?: variant;
       size?: size
@@ -100,12 +98,11 @@ export default function Button({
       isDisabled,
       loader
 }: ButtonProps): JSX.Element {
-      console.log(loader);
       return (
             <button onClick={onClick} disabled={isDisabled} className={cn(ButtonVariants({
                   variant, size,
                   rounded,
-            }), className)}>{isLoading ? loader ? loader : "درحال بارگذاری" : children} {loader}</button>
+            }), className)}>{isLoading ? loader ? loader : "درحال بارگذاری" : children}</button>
       )
 }
 

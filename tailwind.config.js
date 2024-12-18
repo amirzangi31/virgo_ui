@@ -2,7 +2,7 @@
 export default {
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@amirzangi31/package/dist/**/*.{js,ts,jsx,tsx}"
+    "./node_modules/virgo_ui/dist/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
     extend: {

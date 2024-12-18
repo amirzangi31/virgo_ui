@@ -38,7 +38,7 @@ const ModalVariants: ModalVariantsFunction = cva(
 );
 
 const ContentVariants: ContentVariantsFunction = cva(
-      " w-[450px] min-h-[100px] max-w-full  bg-white",
+      " w-[450px] min-h-[100px] max-w-full  bg-white max-h-[90vh] overflow-y-auto",
       {
 
             variants: {
@@ -103,12 +103,12 @@ export default function Modal({
                                     contentClassName
                               )}>
                                     <div
-                                          className="h-full relative p-4 py-14"
+                                          className="h-full relative p-4 py-14 "
                                           onClick={(event) => event.stopPropagation()}
                                     >
                                           {title && <p className={
                                                 cn(
-                                                      "w-full text-sm font-bold text-primary text-center absolute top-6 left-0 ",
+                                                      "w-full text-sm font-bold text-primary text-center absolute top-6 left-0  ",
                                                       titleClassName
                                                 )
                                           }>{title}</p>}
