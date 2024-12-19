@@ -5,7 +5,8 @@ import IconButton from './components/ButtonClose/ButtonClose';
 import IconButtonBack from './components/ButtonBack/ButtonBack';
 import InputOtp from './components/InputOtp/InputOtp';
 import Modal from './components/modal/Modal';
-import { Loader } from './components/Loader';
+import Dropdown, { DropdownItem } from './components/Dropdown/Dropdown';
+import Table from './components/table/Table';
 const App = () => {
       const [loading, setLoading] = useState(false)
       const [modal, setModal] = useState(false)
@@ -30,7 +31,7 @@ const App = () => {
                         <Input variant="error" size="md" placeholder="شماره همراه خود را وارد کنید" label="شماره همراه" />
                         <IconButton />
                         <IconButtonBack color='purple' svgColor='danger' />
-                        <InputOtp variant="default" />
+                       
                   </div>
                   <Button   onClick={() => setModal(true)} variant='primary' size='sm'>
                         Open Modal
@@ -50,6 +51,50 @@ const App = () => {
                               test
                         </Button>
                   </Modal>
+                  <Dropdown
+        trigger={<span>Click me</span>}
+        triggerColor="purple"
+        rounded="lg"
+        position="center"
+        minWidth="md"
+      >
+        <DropdownItem color="primary" onClick={() => console.log("Option 1 clicked")}>
+          Option 1
+        </DropdownItem>
+        <DropdownItem color="danger" onClick={() => console.log("Option 2 clicked")}>
+          Option 2
+        </DropdownItem>
+        <DropdownItem color="purple" onClick={() => console.log("Option 3 clicked")}>
+          Option 3
+        </DropdownItem>
+      </Dropdown>
+      <Table variant="primary" size="lg" border="solid">
+  <thead>
+    <tr>
+      <th>Header 1</th>
+      <th>Header 2</th>
+      <th>Header 3</th>
+      <th>Header 4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Row 1, Cell 1</td>
+      <td>Row 1, Cell 2</td>
+      <td>Row 1, Cell 3</td>
+      <td>Row 1, Cell 4</td>
+    </tr>
+    <tr>
+      <td>Row 2, Cell 1</td>
+      <td>Row 2, Cell 2</td>
+      <td>Row 2, Cell 3</td>
+      <td>Row 2, Cell 4</td>
+    </tr>
+  </tbody>
+</Table>
+
+
+
             </div >
 
       )
