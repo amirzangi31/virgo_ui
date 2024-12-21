@@ -25,6 +25,7 @@ type SidebarHeaderProps = SidebarHeaderVariantsProps & {
       rightButtonClassName?: string
       leftButtonClassName?: string
       avatarClassName?: string
+      avatar?: ReactNode
 }
 
 
@@ -65,7 +66,8 @@ const SidebarHeader = ({
       avatarClassName,
       isAvatar = true,
       rightButtonClassName,
-      leftButtonClassName
+      leftButtonClassName,
+      avatar
 }: SidebarHeaderProps) => {
       return (
             <header className='flex justify-center items-center flex-col relative gap-2 py-4'>
@@ -86,7 +88,7 @@ const SidebarHeader = ({
                                     'size-[3.75rem] rounded-full border border-error bg-emerald-600 overflow-hidden relative z-[1]',
                                     avatarClassName
                               )}>
-
+                                    {avatar}
                               </div>
                         )
                   }

@@ -5,3 +5,34 @@
 input {
   @apply outline-none;
 }
+
+/*for FireFox*/
+::-moz-focus-inner,
+::-moz-focus-inner {
+  border: 0;
+}
+
+/*for IE8 and below */
+:focus,
+:focus {
+  outline: none;
+}
+
+::-webkit-scrollbar {
+  @apply w-[0.625rem] h-[0.625rem];
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-500 rounded-lg cursor-pointer;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary;
+}
