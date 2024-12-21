@@ -1,57 +1,42 @@
 import React, { useState } from 'react'
-import { Button } from './components'
-import Input from './components/Input/Input'
-import IconButton from './components/ButtonClose/ButtonClose';
-import IconButtonBack from './components/ButtonBack/ButtonBack';
-import InputOtp from './components/InputOtp/InputOtp';
-import Modal from './components/modal/Modal';
-import { Loader } from './components/Loader';
+import { HeaderMobile, Sidebar } from './components'
+import Header from './components/header/Header'
+import SidebarHeader from './components/sidebar/SidebarHeader'
+import SidebarItem from './components/sidebar/SidebarItem'
+import SidebarDropdown from './components/sidebar/SidebarDropdown'
+
 const App = () => {
-      const [loading, setLoading] = useState(false)
-      const [modal, setModal] = useState(false)
-
-
+      const [isOpen, setIsOpen] = useState(false)
       return (
-            <div className='w-full h-screen flex-1 justify-center items-center'>
-                  <Button
-                        variant='default'
-                        size='sm'
-                        isLoading={loading}
-                        isDisabled={loading}
-                        onClick={() => {
-                              setLoading(true)
-                              setTimeout(() => {
-                                    setLoading(false)
-                              }, 2000);
-                        }} >
-                        test
-                  </Button>
-                  <div className='mt-4 '>
-                        <Input variant="error" size="md" placeholder="شماره همراه خود را وارد کنید" label="شماره همراه" />
-                        <IconButton />
-                        <IconButtonBack color='purple' svgColor='danger' />
-                        <InputOtp variant="default" />
-                  </div>
-                  <Button   onClick={() => setModal(true)} variant='primary' size='sm'>
-                        Open Modal
-                  </Button>
+            <div className='flex justify-start items-start  flex-col min-h-screen bg-bg_content'>
+                  <Header />
+                  <HeaderMobile /> 
+                  <main className='flex justify-between  items-stretch gap-2  h-[calc(100vh-96px)]  py-2 w-full px-4 relative'>
 
-                  <Modal
-                        isOpen={modal}
-                        position='bottom-modal'
-                        title='ثبت نام'
-                        onClose={() => { setModal(false) }}
-                        isClose
-                  >
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi doloribus neque corrupti delectus ullam rem minus dolor. Asperiores ipsa non illum blanditiis numquam porro, maiores dolores eum similique rem. Hic.
-                        <Button variant='danger_outlined' onClick={() => {
-                              console.log("object");
-                        }} >
-                              test
-                        </Button>
-                  </Modal>
-            </div >
+                        <Sidebar isOpen={isOpen} onClose={() => setIsOpen(!isOpen)} >
+                              <SidebarHeader isOpen={isOpen} rightButton={<p>right</p>} leftButton={<p>left</p>} >
+                                    <p className='text-sm'>امیرمحمد زنگی آبادی </p>
+                              </SidebarHeader>
+                              <div className='py-4'>
+                                    <SidebarItem isOpen={isOpen} text='تست' icon={<p>Icon</p>} />
+                                    <SidebarDropdown open={true}  title='test' icon={<p>Icon</p>} isOpen={isOpen} >
+                                          <SidebarItem isOpen={isOpen} text='تست' icon={<p>Icon</p>} />
+                                    </SidebarDropdown>
+                                    <SidebarDropdown open={false}  title='test' icon={<p>Icon</p>} isOpen={isOpen} >
+                                          <SidebarItem isOpen={isOpen} text='تست' icon={<p>Icon</p>} />
+                                    </SidebarDropdown>
+                                    <SidebarDropdown open={true}  title='test' icon={<p>Icon</p>} isOpen={isOpen} >
+                                          <SidebarItem isOpen={isOpen} text='تست' icon={<p>Icon</p>} />
+                                    </SidebarDropdown>
+                              </div>
+                        </Sidebar>
 
+                        <div className='shadow-shadow_category rounded-xl bg-white w-full '>
+
+                        </div>
+
+                  </main>
+            </div>
       )
 }
 

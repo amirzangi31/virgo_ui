@@ -23,7 +23,7 @@ type HeaderProps = HeaderVariantsProps & {
 type HeaderVariantsFunction = (props: HeaderVariantsProps) => string;
 
 const HeaderVariants: HeaderVariantsFunction = cva(
-      "flex justify-center items-center gap-2 px-4  transition-all duration-300 min-w-[180px]   cursor-pointer rounded-full disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none",
+      "flex justify-center items-center gap-2 px-4   transition-all duration-300 min-w-[180px]   cursor-pointer rounded-full disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none",
       {
 
             variants: {
@@ -52,7 +52,7 @@ export default function Header({
 
 }: HeaderProps): JSX.Element {
       return (
-            <header className='  bg-primary min-h-[5rem] mdSecondary:flex  justify-center items-center'>
+            <header className='  bg-primary min-h-[5rem] mdSecondary:flex  justify-center items-center w-full hidden'>
                   <div className="container py-2 hidden mdSecondary:block ">
                         <div className='flex items-center w-full '>
 
