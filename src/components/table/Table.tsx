@@ -11,18 +11,19 @@ type TableVariantsProps = {
   size?: Size;
   border?: Border;
 };
-
+type MinWidth = "sm" | "md" | "lg" | "custom";
 type TableProps = TableVariantsProps & {
   className?: string;
   children: ReactNode;
-  disabledColumns?: number[]; 
-  enableRowSelect?: boolean; 
+  disabledColumns?: number[];
+  enableRowSelect?: boolean;
   onRowSelect?: (selectedRows: number[]) => void; // Callback for selected rows
   columnWidths?: string[]; // Custom widths for columns
+  minWidth?: MinWidth;// Added minWidth
 };
 
 const TableVariants = cva(
-  "min-w-full table-auto transition-all duration-300 border-collapse text-center ",
+  " table-auto transition-all duration-300 border-collapse text-center",
   {
     variants: {
       variant: {
@@ -44,16 +45,16 @@ const TableVariants = cva(
         dotted: "border-dotted",
         none: "border-none",
       },
-      rounded: {
-        sm: "rounded-sm",
-        md: "rounded-md",
-        lg: "rounded-lg",
-        full: "rounded-full"
-  },
+      minWidth: {
+        sm: "w-1/2", 
+        md: "w-2/3", 
+        lg: "w-5/6", 
+      },
     },
     defaultVariants: {
       variant: "default",
-      size: "md",
+      minWidth: "sm",
+      size: "sm",
       border: "solid",
     },
   }
@@ -86,16 +87,16 @@ const Table = ({
   const validChildren = React.Children.toArray(children).filter((child) => React.isValidElement(child));
 
   return (
-    <table className={cn(TableVariants({ variant, size, border }), className)}>
+    <table className={cn(TableVariants({ variant, size, border}), className)}>
       {validChildren.map((child: ReactElement) => {
         if (child.type === "thead") {
           return React.cloneElement(child, {
             children: React.Children.map(child.props.children, (row: ReactElement) =>
               React.cloneElement(row, {
-                className: "border-b  border-gray-300 ", 
+                className: "border-b border-gray-300",
                 children: React.Children.map(row.props.children, (cell: ReactElement, index: number) => {
                   const isDisabled = isDisabledColumn(index);
-                  const customWidth = columnWidths[index]; 
+                  const customWidth = columnWidths[index];
                   return React.cloneElement(cell, {
                     className: cn(cell.props.className, isDisabled ? "opacity-50" : ""),
                     style: { width: customWidth || "auto" },
@@ -113,7 +114,7 @@ const Table = ({
                 return React.cloneElement(row, {
                   className: cn(
                     row.props.className,
-                    "border-b border-gray-300", 
+                    "border-b border-gray-300",
                     selectedRows.includes(rowIndex) ? "bg-gray-300" : ""
                   ),
                   children: [
@@ -129,10 +130,10 @@ const Table = ({
                     ),
                     ...React.Children.map(row.props.children, (cell: ReactElement, index: number) => {
                       const isDisabled = isDisabledColumn(index);
-                      const customWidth = columnWidths[index]; 
+                      const customWidth = columnWidths[index];
                       return React.cloneElement(cell, {
                         className: cn(cell.props.className, isDisabled ? "cursor-not-allowed opacity-50" : ""),
-                        style: { width: customWidth || "auto" }, 
+                        style: { width: customWidth || "auto" },
                       });
                     }),
                   ],
