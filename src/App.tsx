@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { HeaderMobile, Sidebar } from './components'
 import Header from './components/header/Header'
+import { Sidebar } from './components'
 import SidebarHeader from './components/sidebar/SidebarHeader'
 import SidebarItem from './components/sidebar/SidebarItem'
 import SidebarDropdown from './components/sidebar/SidebarDropdown'
@@ -10,7 +10,7 @@ const App = () => {
       return (
             <div className='flex justify-start items-start  flex-col min-h-screen bg-bg_content'>
                   <Header />
-                  <HeaderMobile /> 
+                  {/* <HeaderMobile /> */}
                   <main className='flex justify-between  items-stretch gap-2  h-[calc(100vh-96px)]  py-2 w-full px-4 relative'>
 
                         <Sidebar isOpen={isOpen} onClose={() => setIsOpen(!isOpen)} >
@@ -19,13 +19,13 @@ const App = () => {
                               </SidebarHeader>
                               <div className='py-4'>
                                     <SidebarItem isOpen={isOpen} text='تست' icon={<p>Icon</p>} />
-                                    <SidebarDropdown open={true}  title='test' icon={<p>Icon</p>} isOpen={isOpen} >
+                                    <SidebarDropdown open={true} title='test' icon={<p>Icon</p>} isOpen={isOpen} >
                                           <SidebarItem isOpen={isOpen} text='تست' icon={<p>Icon</p>} />
                                     </SidebarDropdown>
-                                    <SidebarDropdown open={false}  title='test' icon={<p>Icon</p>} isOpen={isOpen} >
+                                    <SidebarDropdown open={false} title='test' icon={<p>Icon</p>} isOpen={isOpen} >
                                           <SidebarItem isOpen={isOpen} text='تست' icon={<p>Icon</p>} />
                                     </SidebarDropdown>
-                                    <SidebarDropdown open={true}  title='test' icon={<p>Icon</p>} isOpen={isOpen} >
+                                    <SidebarDropdown open={true} title='test' icon={<p>Icon</p>} isOpen={isOpen} >
                                           <SidebarItem isOpen={isOpen} text='تست' icon={<p>Icon</p>} />
                                     </SidebarDropdown>
                               </div>
