@@ -1,27 +1,28 @@
-import React, { ReactNode, ReactElement } from 'react';
+import React, { ReactNode, ReactElement, useState } from "react";
 import { cva } from "class-variance-authority";
-import cn from '../../utils/cnFun';
+import cn from "../../utils/cnFun";
 
-type variant = "primary" | "secondary" | "warning" | "danger" | "success" | "default";
-type size = "sm" | "md" | "lg";
-type border = "solid" | "dashed" | "dotted" | "none";
+type Variant = "primary" | "secondary" | "warning" | "danger" | "success" | "default";
+type Size = "sm" | "md" | "lg";
+type Border = "solid" | "dashed" | "dotted" | "none";
 
 type TableVariantsProps = {
-  variant?: variant;
-  size?: size;
-  border?: border;
+  variant?: Variant;
+  size?: Size;
+  border?: Border;
 };
 
 type TableProps = TableVariantsProps & {
   className?: string;
   children: ReactNode;
-  disabledColumns?: number[]; // New prop for disabling specific columns
+  disabledColumns?: number[]; 
+  enableRowSelect?: boolean; 
+  onRowSelect?: (selectedRows: number[]) => void; // Callback for selected rows
+  columnWidths?: string[]; // Custom widths for columns
 };
 
-type TableVariantsFunction = (props: TableVariantsProps) => string;
-
-const TableVariants: TableVariantsFunction = cva(
-  "min-w-full table-auto transition-all duration-300 border-collapse text-center", // Added `text-center` for horizontal centering
+const TableVariants = cva(
+  "min-w-full table-auto transition-all duration-300 border-collapse text-center ",
   {
     variants: {
       variant: {
@@ -43,8 +44,13 @@ const TableVariants: TableVariantsFunction = cva(
         dotted: "border-dotted",
         none: "border-none",
       },
+      rounded: {
+        sm: "rounded-sm",
+        md: "rounded-md",
+        lg: "rounded-lg",
+        full: "rounded-full"
+  },
     },
-
     defaultVariants: {
       variant: "default",
       size: "md",
@@ -53,47 +59,90 @@ const TableVariants: TableVariantsFunction = cva(
   }
 );
 
-// Define the Table component
 const Table = ({
   variant,
   size,
   border,
   className = "",
   children,
-  disabledColumns = [], // default to empty array if not provided
+  disabledColumns = [],
+  enableRowSelect = false,
+  columnWidths = [],
+  onRowSelect,
 }: TableProps): JSX.Element => {
+  const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
-  // Function to determine if a column should be disabled based on the index
+  // Function to toggle row selection
+  const toggleRowSelect = (rowIndex: number) => {
+    const updatedSelectedRows = selectedRows.includes(rowIndex)
+      ? selectedRows.filter((index) => index !== rowIndex)
+      : [...selectedRows, rowIndex];
+    setSelectedRows(updatedSelectedRows);
+    if (onRowSelect) onRowSelect(updatedSelectedRows);
+  };
+
   const isDisabledColumn = (index: number) => disabledColumns.includes(index);
 
-  // Ensure children is an array of React elements
-  const validChildren = React.Children.toArray(children).filter(child => React.isValidElement(child));
+  const validChildren = React.Children.toArray(children).filter((child) => React.isValidElement(child));
 
-  // Render table headers and cells with disabled state logic
   return (
     <table className={cn(TableVariants({ variant, size, border }), className)}>
       {validChildren.map((child: ReactElement) => {
-        // Iterate over rows (the child rows of the table)
-        if (child.type === 'thead' || child.type === 'tbody') {
+        if (child.type === "thead") {
           return React.cloneElement(child, {
-            children: React.Children.map(child.props.children, (row: ReactElement) => {
-              // Iterate over each row (e.g., <tr>) and its cells
-              return React.cloneElement(row, {
+            children: React.Children.map(child.props.children, (row: ReactElement) =>
+              React.cloneElement(row, {
+                className: "border-b  border-gray-300 ", 
                 children: React.Children.map(row.props.children, (cell: ReactElement, index: number) => {
-                  // Apply 'disabled' class to each cell in the disabled columns
-                  const borderStyle = isDisabledColumn(index) 
-                    ? "cursor-not-allowed opacity-50" 
-                    : "border-b border-gray-300";  // Add borders to the bottom of each cell
-                  
+                  const isDisabled = isDisabledColumn(index);
+                  const customWidth = columnWidths[index]; 
                   return React.cloneElement(cell, {
-                    className: cn(cell.props.className, borderStyle),
-                    disabled: isDisabledColumn(index) ? true : cell.props.disabled,
+                    className: cn(cell.props.className, isDisabled ? "opacity-50" : ""),
+                    style: { width: customWidth || "auto" },
                   });
                 }),
-              });
+              })
+            ),
+          });
+        }
+
+        if (child.type === "tbody") {
+          return React.cloneElement(child, {
+            children: React.Children.map(child.props.children, (row: ReactElement, rowIndex: number) => {
+              if (row.type === "tr") {
+                return React.cloneElement(row, {
+                  className: cn(
+                    row.props.className,
+                    "border-b border-gray-300", 
+                    selectedRows.includes(rowIndex) ? "bg-gray-300" : ""
+                  ),
+                  children: [
+                    enableRowSelect && (
+                      <td key={`select-${rowIndex}`} className="px-4 py-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedRows.includes(rowIndex)}
+                          onChange={() => toggleRowSelect(rowIndex)}
+                          aria-checked={selectedRows.includes(rowIndex)}
+                        />
+                      </td>
+                    ),
+                    ...React.Children.map(row.props.children, (cell: ReactElement, index: number) => {
+                      const isDisabled = isDisabledColumn(index);
+                      const customWidth = columnWidths[index]; 
+                      return React.cloneElement(cell, {
+                        className: cn(cell.props.className, isDisabled ? "cursor-not-allowed opacity-50" : ""),
+                        style: { width: customWidth || "auto" }, 
+                      });
+                    }),
+                  ],
+                });
+              }
+              return row;
             }),
           });
         }
+
         return child;
       })}
     </table>
