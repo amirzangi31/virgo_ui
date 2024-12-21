@@ -19,11 +19,11 @@ type TableProps = TableVariantsProps & {
   enableRowSelect?: boolean;
   onRowSelect?: (selectedRows: number[]) => void; // Callback for selected rows
   columnWidths?: string[]; // Custom widths for columns
-  minWidth?: MinWidth;// Added minWidth
+  minWidth?: MinWidth; // Added minWidth
 };
 
 const TableVariants = cva(
-  " table-auto transition-all duration-300 border-collapse text-center",
+  "table-auto transition-all duration-300 border-collapse text-center",
   {
     variants: {
       variant: {
@@ -46,9 +46,9 @@ const TableVariants = cva(
         none: "border-none",
       },
       minWidth: {
-        sm: "w-1/2", 
-        md: "w-2/3", 
-        lg: "w-5/6", 
+        sm: "w-1/2",
+        md: "w-2/3",
+        lg: "w-5/6",
       },
     },
     defaultVariants: {
@@ -66,12 +66,14 @@ const Table = ({
   border,
   className = "",
   children,
+  minWidth,
   disabledColumns = [],
   enableRowSelect = false,
   columnWidths = [],
   onRowSelect,
 }: TableProps): JSX.Element => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const customMinWidthClass = minWidth === "custom" ? "min-w-custom" : "";
 
   // Function to toggle row selection
   const toggleRowSelect = (rowIndex: number) => {
@@ -87,66 +89,79 @@ const Table = ({
   const validChildren = React.Children.toArray(children).filter((child) => React.isValidElement(child));
 
   return (
-    <table className={cn(TableVariants({ variant, size, border}), className)}>
-      {validChildren.map((child: ReactElement) => {
-        if (child.type === "thead") {
-          return React.cloneElement(child, {
-            children: React.Children.map(child.props.children, (row: ReactElement) =>
-              React.cloneElement(row, {
-                className: "border-b border-gray-300",
-                children: React.Children.map(row.props.children, (cell: ReactElement, index: number) => {
-                  const isDisabled = isDisabledColumn(index);
-                  const customWidth = columnWidths[index];
-                  return React.cloneElement(cell, {
-                    className: cn(cell.props.className, isDisabled ? "opacity-50" : ""),
-                    style: { width: customWidth || "auto" },
-                  });
-                }),
-              })
-            ),
-          });
-        }
+    <div className="overflow-x-auto max-w-full">
+      <table
+        className={cn(
+          TableVariants({
+            variant,
+            size,
+            border,
+            minWidth: minWidth !== "custom" ? minWidth : undefined,
+          }),
+          customMinWidthClass,
+          className
+        )}
+      >
+        {validChildren.map((child: ReactElement) => {
+          if (child.type === "thead") {
+            return React.cloneElement(child, {
+              children: React.Children.map(child.props.children, (row: ReactElement) =>
+                React.cloneElement(row, {
+                  className: "border-b border-gray-300",
+                  children: React.Children.map(row.props.children, (cell: ReactElement, index: number) => {
+                    const isDisabled = isDisabledColumn(index);
+                    const customWidth = columnWidths[index];
+                    return React.cloneElement(cell, {
+                      className: cn(cell.props.className, isDisabled ? "opacity-50" : ""),
+                      style: { width: customWidth || "auto" },
+                    });
+                  }),
+                })
+              ),
+            });
+          }
 
-        if (child.type === "tbody") {
-          return React.cloneElement(child, {
-            children: React.Children.map(child.props.children, (row: ReactElement, rowIndex: number) => {
-              if (row.type === "tr") {
-                return React.cloneElement(row, {
-                  className: cn(
-                    row.props.className,
-                    "border-b border-gray-300",
-                    selectedRows.includes(rowIndex) ? "bg-gray-300" : ""
-                  ),
-                  children: [
-                    enableRowSelect && (
-                      <td key={`select-${rowIndex}`} className="px-4 py-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedRows.includes(rowIndex)}
-                          onChange={() => toggleRowSelect(rowIndex)}
-                          aria-checked={selectedRows.includes(rowIndex)}
-                        />
-                      </td>
+          if (child.type === "tbody") {
+            return React.cloneElement(child, {
+              children: React.Children.map(child.props.children, (row: ReactElement, rowIndex: number) => {
+                if (row.type === "tr") {
+                  return React.cloneElement(row, {
+                    className: cn(
+                      row.props.className,
+                      "border-b border-gray-300",
+                      selectedRows.includes(rowIndex) ? "bg-gray-300" : ""
                     ),
-                    ...React.Children.map(row.props.children, (cell: ReactElement, index: number) => {
-                      const isDisabled = isDisabledColumn(index);
-                      const customWidth = columnWidths[index];
-                      return React.cloneElement(cell, {
-                        className: cn(cell.props.className, isDisabled ? "cursor-not-allowed opacity-50" : ""),
-                        style: { width: customWidth || "auto" },
-                      });
-                    }),
-                  ],
-                });
-              }
-              return row;
-            }),
-          });
-        }
+                    children: [
+                      enableRowSelect && (
+                        <td key={`select-${rowIndex}`} className="px-4 py-2">
+                          <input
+                            type="checkbox"
+                            checked={selectedRows.includes(rowIndex)}
+                            onChange={() => toggleRowSelect(rowIndex)}
+                            aria-checked={selectedRows.includes(rowIndex)}
+                          />
+                        </td>
+                      ),
+                      ...React.Children.map(row.props.children, (cell: ReactElement, index: number) => {
+                        const isDisabled = isDisabledColumn(index);
+                        const customWidth = columnWidths[index];
+                        return React.cloneElement(cell, {
+                          className: cn(cell.props.className, isDisabled ? "cursor-not-allowed opacity-50" : ""),
+                          style: { width: customWidth || "auto" },
+                        });
+                      }),
+                    ],
+                  });
+                }
+                return row;
+              }),
+            });
+          }
 
-        return child;
-      })}
-    </table>
+          return child;
+        })}
+      </table>
+    </div>
   );
 };
 
