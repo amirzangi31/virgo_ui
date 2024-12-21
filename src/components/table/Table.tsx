@@ -1,7 +1,10 @@
-import React, { ReactNode, ReactElement, useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { cva } from "class-variance-authority";
 import cn from "../../utils/cnFun";
 
+/**
+ * Types
+ */
 type Variant = "primary" | "secondary" | "warning" | "danger" | "success" | "default";
 type Size = "sm" | "md" | "lg";
 type Border = "solid" | "dashed" | "dotted" | "none";
@@ -12,18 +15,35 @@ type TableVariantsProps = {
   border?: Border;
 };
 type MinWidth = "sm" | "md" | "lg" | "custom";
-type TableProps = TableVariantsProps & {
-  className?: string;
-  children: ReactNode;
-  disabledColumns?: number[];
-  enableRowSelect?: boolean;
-  onRowSelect?: (selectedRows: number[]) => void; // Callback for selected rows
-  columnWidths?: string[]; // Custom widths for columns
-  minWidth?: MinWidth;// Added minWidth
+
+type TableColumn<T> = {
+  key: keyof T;
+  label: string;
+  sortable?: boolean;
+  filterable?: boolean;
+  width?: string;
+  render?: (value: T[keyof T], row: T) => ReactNode;
 };
 
+type TableProps<T> = TableVariantsProps & {
+  className?: string;
+  children?: ReactNode;
+  data: T[];
+  columns: TableColumn<T>[];
+  disabledColumns?: number[];
+  enableRowSelect?: boolean;
+  onRowSelect?: (selectedRows: number[]) => void;
+  columnWidths?: string[];
+  minWidth?: MinWidth;
+  pagination?: boolean;
+  rowsPerPage?: number;
+};
+
+/**
+ * Class Variants
+ */
 const TableVariants = cva(
-  " table-auto transition-all duration-300 border-collapse text-center",
+  "table-auto transition-all duration-300 border-collapse text-center h-full",
   {
     variants: {
       variant: {
@@ -46,9 +66,9 @@ const TableVariants = cva(
         none: "border-none",
       },
       minWidth: {
-        sm: "w-1/2", 
-        md: "w-2/3", 
-        lg: "w-5/6", 
+        sm: "w-1/2",
+        md: "w-2/3",
+        lg: "w-5/6",
       },
     },
     defaultVariants: {
@@ -60,20 +80,27 @@ const TableVariants = cva(
   }
 );
 
-const Table = ({
+/**
+ * Main Table Component
+ */
+const Table = <T,>({
   variant,
   size,
   border,
   className = "",
-  children,
+  data,
+  columns,
+  minWidth,
   disabledColumns = [],
   enableRowSelect = false,
-  columnWidths = [],
+  pagination = false,
+  rowsPerPage = 10,
   onRowSelect,
-}: TableProps): JSX.Element => {
+}: TableProps<T>): JSX.Element => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortConfig, setSortConfig] = useState<{ key: keyof T; direction: "asc" | "desc" } | null>(null);
 
-  // Function to toggle row selection
   const toggleRowSelect = (rowIndex: number) => {
     const updatedSelectedRows = selectedRows.includes(rowIndex)
       ? selectedRows.filter((index) => index !== rowIndex)
@@ -82,71 +109,107 @@ const Table = ({
     if (onRowSelect) onRowSelect(updatedSelectedRows);
   };
 
-  const isDisabledColumn = (index: number) => disabledColumns.includes(index);
+  const handleSort = (key: keyof T) => {
+    if (!sortConfig || sortConfig.key !== key) {
+      setSortConfig({ key, direction: "asc" });
+    } else {
+      setSortConfig({ key, direction: sortConfig.direction === "asc" ? "desc" : "asc" });
+    }
+  };
 
-  const validChildren = React.Children.toArray(children).filter((child) => React.isValidElement(child));
+  const sortedData = React.useMemo(() => {
+    if (!sortConfig) return data;
+    return [...data].sort((a, b) => {
+      const aValue = a[sortConfig.key];
+      const bValue = b[sortConfig.key];
+      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [data, sortConfig]);
+
+  const paginatedData = React.useMemo(() => {
+    if (!pagination) return sortedData;
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    return sortedData.slice(startIndex, startIndex + rowsPerPage);
+  }, [sortedData, currentPage, rowsPerPage, pagination]);
+
+  const totalPages = Math.ceil(data.length / rowsPerPage);
 
   return (
-    <table className={cn(TableVariants({ variant, size, border}), className)}>
-      {validChildren.map((child: ReactElement) => {
-        if (child.type === "thead") {
-          return React.cloneElement(child, {
-            children: React.Children.map(child.props.children, (row: ReactElement) =>
-              React.cloneElement(row, {
-                className: "border-b border-gray-300",
-                children: React.Children.map(row.props.children, (cell: ReactElement, index: number) => {
-                  const isDisabled = isDisabledColumn(index);
-                  const customWidth = columnWidths[index];
-                  return React.cloneElement(cell, {
-                    className: cn(cell.props.className, isDisabled ? "opacity-50" : ""),
-                    style: { width: customWidth || "auto" },
-                  });
-                }),
-              })
-            ),
-          });
-        }
-
-        if (child.type === "tbody") {
-          return React.cloneElement(child, {
-            children: React.Children.map(child.props.children, (row: ReactElement, rowIndex: number) => {
-              if (row.type === "tr") {
-                return React.cloneElement(row, {
-                  className: cn(
-                    row.props.className,
-                    "border-b border-gray-300",
-                    selectedRows.includes(rowIndex) ? "bg-gray-300" : ""
-                  ),
-                  children: [
-                    enableRowSelect && (
-                      <td key={`select-${rowIndex}`} className="px-4 py-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedRows.includes(rowIndex)}
-                          onChange={() => toggleRowSelect(rowIndex)}
-                          aria-checked={selectedRows.includes(rowIndex)}
-                        />
-                      </td>
-                    ),
-                    ...React.Children.map(row.props.children, (cell: ReactElement, index: number) => {
-                      const isDisabled = isDisabledColumn(index);
-                      const customWidth = columnWidths[index];
-                      return React.cloneElement(cell, {
-                        className: cn(cell.props.className, isDisabled ? "cursor-not-allowed opacity-50" : ""),
-                        style: { width: customWidth || "auto" },
-                      });
-                    }),
-                  ],
-                });
-              }
-              return row;
-            }),
-          });
-        }
-
-        return child;
-      })}
-    </table>
+    <div className="overflow-x-auto max-w-full">
+      <table
+        className={cn(
+          TableVariants({
+            variant,
+            size,
+            border,
+            minWidth: minWidth !== "custom" ? minWidth : undefined,
+          }),
+          className
+        )}
+      >
+        <thead>
+          <tr>
+            {enableRowSelect && <th></th>}
+            {columns.map((column, index) => (
+              <th
+                key={String(column.key)}
+                className={cn("px-4 py-2 cursor-pointer", disabledColumns.includes(index) && "opacity-50")}
+                style={{ width: column.width || "auto" }}
+                onClick={() => column.sortable && handleSort(column.key)}
+              >
+                {column.label}
+                {sortConfig?.key === column.key && (sortConfig.direction === "asc" ? " 🔼" : " 🔽")}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {paginatedData.map((row, rowIndex) => (
+            <tr key={rowIndex} className="border-b">
+              {enableRowSelect && (
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={selectedRows.includes(rowIndex)}
+                    onChange={() => toggleRowSelect(rowIndex)}
+                  />
+                </td>
+              )}
+              {columns.map((column) => (
+                <td key={String(column.key)} className="px-4 py-2">
+                  {column.render
+                    ? column.render(row[column.key], row)
+                    : String(row[column.key])}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {pagination && (
+        <div className="flex justify-between items-center mt-4">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            className="px-4 py-2 bg-gray-200"
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            className="px-4 py-2 bg-gray-200"
+          >
+            Next
+          </button>
+        </div>
+      )}
+    </div>
   );
 };
 
