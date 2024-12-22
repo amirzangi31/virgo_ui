@@ -5,3 +5,72 @@
 input {
   @apply outline-none;
 }
+.container {
+  @apply px-4;
+}
+/*for FireFox*/
+::-moz-focus-inner,
+::-moz-focus-inner {
+  border: 0;
+}
+
+/*for IE8 and below */
+:focus,
+:focus {
+  outline: none;
+}
+
+::-webkit-scrollbar {
+  @apply w-[0.625rem] h-[0.625rem];
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-500 rounded-lg cursor-pointer;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary;
+}
+
+/*----------------------------Loader-----------------------------*/
+.perspective {
+  perspective: 48.75rem;
+}
+
+@keyframes loadingCircleOne {
+  0% {
+    transform: rotateX(40deg) rotateY(-40deg) rotateZ(0deg);
+  }
+
+  100% {
+    transform: rotateX(40deg) rotateY(-40deg) rotateZ(360deg);
+  }
+}
+
+@keyframes loadingCircleTwo {
+  0% {
+    transform: rotateX(50deg) rotateY(15deg) rotateZ(0deg);
+  }
+
+  100% {
+    transform: rotateX(50deg) rotateY(15deg) rotateZ(360deg);
+  }
+}
+
+@keyframes loadingCircleThree {
+  0% {
+    transform: rotateX(15deg) rotateY(50deg) rotateZ(0deg);
+  }
+
+  100% {
+    transform: rotateX(15deg) rotateY(50deg) rotateZ(360deg);
+  }
+}
+/*----------------------------Loader-----------------------------*/

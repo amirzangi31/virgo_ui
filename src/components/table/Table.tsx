@@ -1,20 +1,21 @@
 import React, { ReactNode, useState } from "react";
 import { cva } from "class-variance-authority";
 import cn from "../../utils/cnFun";
+import { BorderStyle, ColorType, SizeType } from "../../types/GlobalType";
 
-/**
- * Types
- */
-type Variant = "primary" | "secondary" | "warning" | "danger" | "success" | "default";
-type Size = "sm" | "md" | "lg";
-type Border = "solid" | "dashed" | "dotted" | "none";
+
+type Variant = ColorType
+type textColor = ColorType
+type Size = SizeType
+type MinWidth = SizeType | "full"
+
 
 type TableVariantsProps = {
   variant?: Variant;
   size?: Size;
-  border?: Border;
+  border?: BorderStyle;
+  textColor?: textColor
 };
-type MinWidth = "sm" | "md" | "lg" | "custom";
 
 type TableColumn<T> = {
   key: keyof T;
@@ -37,22 +38,24 @@ type TableProps<T> = TableVariantsProps & {
   minWidth?: MinWidth;
   pagination?: boolean;
   rowsPerPage?: number;
+  nextButton?: ReactNode
+  prevButton?: ReactNode
+  tableClassname?: string
 };
 
 /**
  * Class Variants
  */
 const TableVariants = cva(
-  "table-auto transition-all duration-300 border-collapse text-center h-full",
+  "table-auto transition-all duration-300 text-center  rounded-full w-full  overflow-hidden overflow-x-auto border border-primary",
   {
     variants: {
-      variant: {
-        primary: "bg-primary text-white border border-primary",
-        secondary: "bg-secondary text-white border border-secondary",
-        warning: "bg-warning text-white border border-warning",
-        danger: "bg-danger text-white border border-danger",
-        success: "bg-success text-white border border-success",
-        default: "bg-gray-500 text-white border border-gray-500",
+
+      rounded: {
+        sm: "rounded-sm",
+        md: "rounded-md",
+        lg: "rounded-lg",
+        full: "rounded-full",
       },
       size: {
         sm: "text-sm",
@@ -69,16 +72,64 @@ const TableVariants = cva(
         sm: "w-1/2",
         md: "w-2/3",
         lg: "w-5/6",
+        full: "w-full"
       },
     },
     defaultVariants: {
-      variant: "default",
-      minWidth: "sm",
-      size: "sm",
-      border: "solid",
+      rounded: "lg",
+      minWidth: "full",
+      size: "lg",
+      border: "solid"
     },
   }
 );
+
+
+const TableColorVariants = cva(
+  "",
+  {
+    variants: {
+      variant: {
+        primary: "bg-primary  text-primary",
+        secondary: "bg-secondary  text-secondary",
+        warning: "bg-warning  text-warning",
+        danger: "bg-error  text-error",
+        success: "bg-success  text-success",
+        inverse: "bg-gray-600 text-gray-600",
+        purple: "bg-purple-500 text-purple-500",
+        default: "bg-gray-500  text-gray-500",
+        white: "bg-white text-primary  ",
+      },
+    },
+    defaultVariants: {
+      variant: "primary"
+    }
+  }
+)
+
+const TableTextColorVariants = cva(
+  "",
+  {
+    variants: {
+      textColor: {
+        primary: "text-primary",
+        secondary: "text-secondary",
+        warning: "text-warning",
+        danger: "text-error",
+        success: "text-success",
+        inverse: "text-inverse-600",
+        purple: "text-purple-500",
+        default: "text-gray-500",
+        white: "text-white",
+      },
+    },
+    defaultVariants: {
+      textColor: "primary"
+    }
+  }
+)
+
+
 
 /**
  * Main Table Component
@@ -95,7 +146,11 @@ const Table = <T,>({
   enableRowSelect = false,
   pagination = false,
   rowsPerPage = 10,
+  nextButton,
+  prevButton,
   onRowSelect,
+  tableClassname,
+  textColor
 }: TableProps<T>): JSX.Element => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -137,25 +192,36 @@ const Table = <T,>({
   const totalPages = Math.ceil(data.length / rowsPerPage);
 
   return (
-    <div className="overflow-x-auto max-w-full">
+    <div className={cn(
+      "",
+      TableVariants({
+        size,
+        border,
+        minWidth
+      }),
+      className
+
+    )}>
       <table
-        className={cn(
-          TableVariants({
-            variant,
-            size,
-            border,
-            minWidth: minWidth !== "custom" ? minWidth : undefined,
-          }),
-          className
-        )}
+        className={`${tableClassname} px-4 w-full`}
       >
         <thead>
-          <tr>
-            {enableRowSelect && <th></th>}
+          <tr className="rounded-xl">
+            {enableRowSelect && <th className={cn(
+              "min-w-[4rem] ",
+              TableColorVariants({
+                variant
+              })
+            )}></th>}
             {columns.map((column, index) => (
               <th
                 key={String(column.key)}
-                className={cn("px-4 py-2 cursor-pointer", disabledColumns.includes(index) && "opacity-50")}
+                className={cn("px-4 py-2 cursor-pointer ",
+                  TableColorVariants({
+                    variant
+                  }),
+                  "text-white",
+                  disabledColumns.includes(index) && "opacity-50")}
                 style={{ width: column.width || "auto" }}
                 onClick={() => column.sortable && handleSort(column.key)}
               >
@@ -165,9 +231,11 @@ const Table = <T,>({
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className={cn(
+          TableTextColorVariants({ textColor })
+        )}>
           {paginatedData.map((row, rowIndex) => (
-            <tr key={rowIndex} className="border-b">
+            <tr key={rowIndex} className="border-b hover:bg-gray-100 hover:text-black transition duration-200 ease-in-out ">
               {enableRowSelect && (
                 <td>
                   <input
@@ -186,27 +254,45 @@ const Table = <T,>({
               ))}
             </tr>
           ))}
+
+
         </tbody>
+
       </table>
       {pagination && (
-        <div className="flex justify-between items-center mt-4">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            className="px-4 py-2 bg-gray-200"
-          >
-            Previous
-          </button>
-          <span>
-            Page {currentPage} of {totalPages}
+
+        <div className={cn(
+          "mt-4  flex justify-center items-center gap-4 py-1",
+          TableColorVariants({
+            variant
+          })
+        )}>
+          {
+            prevButton ? prevButton : (
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                className="px-4 py-2 bg-gray-200 border border-gray-300 rounded"
+              >
+                قبلی
+              </button>
+            )
+
+          }
+          <span className="text-center text-nowrap text-white ">
+            {currentPage} از {totalPages}
           </span>
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            className="px-4 py-2 bg-gray-200"
-          >
-            Next
-          </button>
+          {
+            nextButton ? nextButton : (
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                className="px-4 py-2 bg-gray-200 border border-gray-300 rounded"
+              >
+                بعدی
+              </button>
+            )
+          }
         </div>
       )}
     </div>
