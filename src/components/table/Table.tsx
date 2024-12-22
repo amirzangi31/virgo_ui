@@ -1,18 +1,17 @@
 import React, { ReactNode, useState } from "react";
 import { cva } from "class-variance-authority";
 import cn from "../../utils/cnFun";
+import { BorderStyle } from "../../types/GlobalType";
 
-/**
- * Types
- */
+
 type Variant = "primary" | "secondary" | "warning" | "danger" | "success" | "default";
 type Size = "sm" | "md" | "lg";
-type Border = "solid" | "dashed" | "dotted" | "none";
+
 
 type TableVariantsProps = {
   variant?: Variant;
   size?: Size;
-  border?: Border;
+  border?: BorderStyle;
 };
 type MinWidth = "sm" | "md" | "lg" | "custom";
 
@@ -43,16 +42,22 @@ type TableProps<T> = TableVariantsProps & {
  * Class Variants
  */
 const TableVariants = cva(
-  "table-auto transition-all duration-300 border-collapse text-center h-full",
+  "table-auto transition-all duration-300 text-center h-full rounded-full",
   {
     variants: {
       variant: {
-        primary: "bg-primary text-white border border-primary",
-        secondary: "bg-secondary text-white border border-secondary",
-        warning: "bg-warning text-white border border-warning",
-        danger: "bg-danger text-white border border-danger",
-        success: "bg-success text-white border border-success",
-        default: "bg-gray-500 text-white border border-gray-500",
+        primary: "bg-primary text-white ",
+        secondary: "bg-secondary text-white ",
+        warning: "bg-warning text-white ",
+        danger: "bg-danger text-white ",
+        success: "bg-success text-white ",
+        default: "bg-gray-500 text-white ",
+      },
+      rounded: {
+        sm: "rounded-sm",
+        md: "rounded-md",
+        lg: "rounded-lg",
+        full: "rounded-full",
       },
       size: {
         sm: "text-sm",
@@ -73,6 +78,7 @@ const TableVariants = cva(
     },
     defaultVariants: {
       variant: "default",
+      rounded: "lg",
       minWidth: "sm",
       size: "sm",
       border: "solid",
@@ -90,6 +96,7 @@ const Table = <T,>({
   className = "",
   data,
   columns,
+
   minWidth,
   disabledColumns = [],
   enableRowSelect = false,
@@ -137,7 +144,7 @@ const Table = <T,>({
   const totalPages = Math.ceil(data.length / rowsPerPage);
 
   return (
-    <div className="overflow-x-auto max-w-full">
+    <div className="overflow-x-auto ">
       <table
         className={cn(
           TableVariants({
@@ -167,7 +174,7 @@ const Table = <T,>({
         </thead>
         <tbody>
           {paginatedData.map((row, rowIndex) => (
-            <tr key={rowIndex} className="border-b">
+            <tr key={rowIndex}  className="border-b hover:bg-gray-100 hover:text-black transition duration-200 ease-in-out">
               {enableRowSelect && (
                 <td>
                   <input
@@ -186,29 +193,34 @@ const Table = <T,>({
               ))}
             </tr>
           ))}
+          {pagination && (
+          
+          <div className="flex justify-stretch items-center mt-4 w-[100] ">
+             <div className=" ">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                className="px-4 py-2 bg-gray-200 border border-gray-300 rounded"
+              >
+                قبلی
+              </button></div>
+              <span className="text-center text-nowrap ">
+                {currentPage} از {totalPages}
+              </span>
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                className="px-4 py-2 bg-gray-200 border border-gray-300 rounded"
+              >
+                بعدی
+              </button>
+            </div>
+          )}
+
         </tbody>
+
       </table>
-      {pagination && (
-        <div className="flex justify-between items-center mt-4">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            className="px-4 py-2 bg-gray-200"
-          >
-            Previous
-          </button>
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            className="px-4 py-2 bg-gray-200"
-          >
-            Next
-          </button>
-        </div>
-      )}
+
     </div>
   );
 };
