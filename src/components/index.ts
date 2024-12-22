@@ -1,4 +1,3 @@
-
 export { Button } from "./Button"
 export { BackButton } from "./ButtonBack"
 export { CloseButton } from "./ButtonClose"
@@ -12,3 +11,5 @@ export { Header } from "./header"
 export { HeaderMobile } from "./headermobile"
 export { InputOtp } from "./InputOtp"
 export { Dropdown } from "./dropdown"
+export { SectionTitle } from "./sectionTitle"
+
