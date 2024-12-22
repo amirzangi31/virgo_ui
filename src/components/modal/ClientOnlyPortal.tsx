@@ -13,7 +13,14 @@ export default function ClientOnlyPortal({ children, selector }: ClientOnlyPorta
 
       useEffect(() => {
             ref.current = document.querySelector(selector);
-            setMounted(true);
+            if (ref.current) {
+                  setMounted(true);
+            } else {
+                  ref.current = document.createElement('div');
+                  ref.current.id = 'modal';
+                  document.body.appendChild(ref.current);
+                  setMounted(true);
+            }
       }, [selector]);
 
       return mounted ? createPortal(children, ref.current!) : null;

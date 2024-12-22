@@ -41,7 +41,7 @@ const SidebarDropdown = ({
       handler,
 }: SiderbarDropdownProps) => {
       return (
-            <div>
+            <>
                   <button type="button"
                         className={cn(SidebarItemVariants({ isOpen }))}
                         onClick={handler} 
@@ -72,7 +72,7 @@ const SidebarDropdown = ({
                         ) : null}
                   </button>
                   {open && <div className="flex justify-start items-start gap-2 px-4">{children}</div>}
-            </div>
+            </>
       );
 };
 

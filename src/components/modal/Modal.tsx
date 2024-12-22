@@ -18,7 +18,7 @@ type ContentVariantsProps = {
 }
 
 const ModalVariants: ModalVariantsFunction = cva(
-      "fixed inset-0  backdrop-blur-md backdrop-brightness-50 flex ",
+      "fixed inset-0  backdrop-blur-md backdrop-brightness-50 flex z-10",
       {
 
             variants: {
