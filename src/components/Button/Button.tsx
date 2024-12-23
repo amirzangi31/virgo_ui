@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { cva } from "class-variance-authority";
 import cn from '../../utils/cnFun';
+import { Loader } from '../Loader';
 
 type variant = "primary" | "primary_outlined" | "secondary" | "secondary_outlined" | "warning" | "warning_outlined" | "danger" | "danger_outlined" | "inverse" | "inverse_outlined" | "success" | "success_outlined" | "purple" | "purple_outlined" | "default" | "default_outlined";
 type size = "sm" | "md" | "lg"
@@ -104,7 +105,7 @@ export default function Button({
             <button type={type} onClick={onClick} disabled={isDisabled} className={cn(ButtonVariants({
                   variant, size,
                   rounded,
-            }), className)}>{isLoading ? loader ? loader : "درحال بارگذاری" : children}</button>
+            }), className)}>{isLoading ? loader ? loader : <Loader  /> : children}</button>
       )
 }
 

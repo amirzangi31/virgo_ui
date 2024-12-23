@@ -93,13 +93,13 @@ export default function Modal({
                               }
                         }} className={cn(
                               ModalVariants({ position }),
-                              styles.modal_animation,
+                              "modal_animation",
                               className,
                         )}>
                               <div className={cn(
                                     "",
                                     ContentVariants({ position }),
-                                    styles.content_modal_animation,
+                                    "content_modal_animation",
                                     contentClassName
                               )}>
                                     <div

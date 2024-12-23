@@ -2,10 +2,11 @@ import React from 'react'
 import { cva } from "class-variance-authority";
 import cn from '../../utils/cnFun';
 import './Loader.css'
+import { SizeType } from '../../types/GlobalType';
 
 
 type variant = "primary" | "secondary" | "error" | "warning" | "white"
-type size = "sm" | "md" | "lg"
+type size = SizeType
 type rounded = "sm" | "md" | "lg" | "full"
 type labelcolor = "primary" | "secondary" | "error" | "warning" | "white"
 
@@ -40,6 +41,7 @@ const LoaderVariants: LoaderVariantsFunction = cva(
                         white: " border-white",
                   },
                   size: {
+
                         sm: "size-[2.5rem]",
                         md: "size-[3rem]",
                         lg: "size-[4rem]"
@@ -98,13 +100,13 @@ export default function Loader({
                               }), className
                         )}></div>
                   </div>
-                  <p className={
+                  {label && <p className={
                         cn("text-sm ", LoaderVariants({
                               labelcolor
                         }),
                               "w-fit"
                         )
-                  }>{label}</p>
+                  }>{label}</p>}
             </div>
       )
 }

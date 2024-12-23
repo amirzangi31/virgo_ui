@@ -7,6 +7,7 @@ import SidebarDropdown from './components/sidebar/SidebarDropdown'
 import { HeaderMobile } from './components/headermobile'
 import { TableColumnUi } from './types/GlobalType'
 import { useForm, SubmitHandler } from 'react-hook-form';
+import SearchComponent from './components/SearchComponent/SearchComponent';
 
 type FormValues = {
       username: string;
@@ -89,7 +90,7 @@ const App = () => {
                               <SectionTitle >
                                     est
                               </SectionTitle>
-                              <Loader label='درحال بارگذاری'  />
+                              <Loader label='درحال بارگذاری' />
                               <Table
                                     className='mt-8'
                                     data={data}
@@ -113,6 +114,10 @@ const App = () => {
                                     error={errors.username}
                               />
                         </div>
+                        <Button loader={<Loader variant='white'  size='sm' />} isLoading={true}>
+                              dsaf
+                        </Button>
+                        <SearchComponent value='test' variant='white'  changeHandler={() => console.log("0")} /> 
                   </main>
             </div>
       )
