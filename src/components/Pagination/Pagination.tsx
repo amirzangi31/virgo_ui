@@ -4,12 +4,16 @@ import cn from '../../utils/cnFun';
 
 import { ColorType, RoundedType } from '../../types/GlobalType';
 
-type Variant = ColorType;
+type Variant = ColorType | "disabled";
 
 // type textColor = ColorType;
 // type Size = SizeType;
+type ButtonVariantsProps = {
+    variant?: Variant;
+    rounded?: RoundedType
+};
 
-type PaginationProps = {
+type PaginationProps = ButtonVariantsProps & {
     pageCount: number;
     variant: Variant
     rounded?: RoundedType
@@ -25,8 +29,9 @@ type PaginationProps = {
     disabledClassName?: string; // کلاس غیرفعال
     renderOnZeroPageCount?: (() => React.ReactNode) | null; // رفتار برای حالت صفر صفحه
 };
+type ButtonVariantsFunction = (props: ButtonVariantsProps) => string;
 
-const buttonStyles = cva(
+const buttonStyles: ButtonVariantsFunction = cva(
     'px-4 py-2 transition-all duration-300 text-sm  rounded cursor-pointer flex justify-center items-center',
     {
         variants: {
@@ -67,6 +72,7 @@ export default function CustomPagination({
     pageRangeDisplayed = 3,
     marginPagesDisplayed = 1,
     disabledClassName = 'opacity-20',
+    variant,
     renderOnZeroPageCount = null,
 }: PaginationProps): JSX.Element {
     if (pageCount === 0 && renderOnZeroPageCount) {

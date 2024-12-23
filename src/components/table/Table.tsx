@@ -283,32 +283,7 @@ const Table = <T,>({
             variant
           })
         )}>
-          {
-            prevButton ? prevButton : (
-              <button
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                className="px-4 py-2 bg-gray-200 border border-gray-300 rounded"
-              >
-                قبلی
-              </button>
-            )
-
-          }
-          <span className="text-center text-nowrap text-white ">
-            {currentPage} از {totalPages}
-          </span>
-          {
-            nextButton ? nextButton : (
-              <button
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                className="px-4 py-2 bg-gray-200 border border-gray-300 rounded"
-              >
-                بعدی
-              </button>
-            )
-          }
+          {pagination ? pagination : "test"}
         </div>
       )}
     </div>
