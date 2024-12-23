@@ -10,6 +10,8 @@ export { Sidebar, SidebarDropdown, SidebarHeader, SidebarItem } from "./sidebar"
 export { Header } from "./header"
 export { HeaderMobile } from "./headermobile"
 export { InputOtp } from "./InputOtp"
-export { Dropdown } from "./dropdown"
+export { Dropdown } from "./Dropdown"
 export { SectionTitle } from "./sectionTitle"
+export { SearchHomePage } from "./SearchHomePage"
+
 
