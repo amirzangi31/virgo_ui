@@ -13,5 +13,6 @@ export { InputOtp } from "./InputOtp"
 export { Dropdown } from "./Dropdown"
 export { SectionTitle } from "./sectionTitle"
 export { SearchHomePage } from "./SearchHomePage"
+export {Pagination} from "./Pagination"
 
 
