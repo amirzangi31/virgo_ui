@@ -1,7 +1,7 @@
 {
   "name": "virgo_ui",
   "private": false,
-  "version": "0.2.6",
+  "version": "0.3.0",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -20,18 +20,21 @@
     "build": "tsup src/index.ts --dts --format esm,cjs --minify"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.1",
+    "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "postcss": "^8.4.49",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.54.2",
     "tailwind-merge": "^2.5.5",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.16"
+    "tailwindcss": "^3.4.16",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
-    "@types/node": "^22.10.2",
     "@eslint/js": "^9.15.0",
+    "@types/node": "^22.10.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
@@ -44,5 +47,12 @@
     "typescript-eslint": "^8.15.0",
     "vite": "^6.0.1"
   },
-  "keywords": ["react" ,"nextjs" , "ui" , "react-dom" , "ssr" ,  "ssg"]
+  "keywords": [
+    "react",
+    "nextjs",
+    "ui",
+    "react-dom",
+    "ssr",
+    "ssg"
+  ]
 }

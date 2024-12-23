@@ -45,17 +45,18 @@ const LoaderVariants: LoaderVariantsFunction = cva(
                         lg: "size-[4rem]"
                   },
                   labelcolor: {
-                        primary: " primary",
-                        secondary: " secondary",
-                        error: " error",
-                        warning: " warning",
-                        white: " white",
+                        primary: " text-primary",
+                        secondary: "text-secondary",
+                        error: " text-error",
+                        warning: " text-warning",
+                        white: " text-white",
                   }
             },
 
             defaultVariants: {
                   variant: "primary",
-                  size: "sm"
+                  size: "sm",
+                  labelcolor: "primary"
             },
       }
 );
@@ -71,34 +72,38 @@ export default function Loader({
 }: LoaderProps): JSX.Element {
 
       return (
-            <div className={cn(
-                  cn("perspective relative  rounded-full ", LoaderVariants({
-                        size
-                  })
-                  )
-            )}>
+            <div className='w-fit  flex justify-center items-center gap-1 flex-col'>
                   <div className={cn(
-                        "absolute w-full h-full rounded-full left-0 top-0 animate-[loadingCircleOne_1.2s_linear_infinite] border-b-4",
-                        LoaderVariants({
-                              variant
-                        }), className
-                  )}></div>
-                  <div className={cn(
-                        "absolute w-full h-full rounded-full right-0 top-0 animate-[loadingCircleTwo_1.2s_linear_infinite] border-r-4",
-                        LoaderVariants({
-                              variant
-                        }), className
-                  )}></div>
-                  <div className={cn(
-                        "absolute w-full h-full rounded-full right-0 bottom-0 animate-[loadingCircleThree_1.2s_linear_infinite] border-t-4",
-                        LoaderVariants({
-                              variant
-                        }), className
-                  )}></div>
+                        cn("perspective relative  rounded-full ", LoaderVariants({
+                              size
+                        })
+                        )
+                  )}>
+                        <div className={cn(
+                              "absolute w-full h-full rounded-full left-0 top-0 animate-[loadingCircleOne_1.2s_linear_infinite] border-b-4",
+                              LoaderVariants({
+                                    variant
+                              }), className
+                        )}></div>
+                        <div className={cn(
+                              "absolute w-full h-full rounded-full right-0 top-0 animate-[loadingCircleTwo_1.2s_linear_infinite] border-r-4",
+                              LoaderVariants({
+                                    variant
+                              }), className
+                        )}></div>
+                        <div className={cn(
+                              "absolute w-full h-full rounded-full right-0 bottom-0 animate-[loadingCircleThree_1.2s_linear_infinite] border-t-4",
+                              LoaderVariants({
+                                    variant
+                              }), className
+                        )}></div>
+                  </div>
                   <p className={
-                        cn("text-sm absolute top-full left-0 translate-x-1/2", LoaderVariants({
+                        cn("text-sm ", LoaderVariants({
                               labelcolor
-                        }))
+                        }),
+                              "w-fit"
+                        )
                   }>{label}</p>
             </div>
       )

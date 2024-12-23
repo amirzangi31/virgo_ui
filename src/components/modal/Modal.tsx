@@ -103,7 +103,7 @@ export default function Modal({
                                     contentClassName
                               )}>
                                     <div
-                                          className="h-full relative p-4 py-14 "
+                                          className="h-full relative p-4 pt-14 "
                                           onClick={(event) => event.stopPropagation()}
                                     >
                                           {title && <p className={

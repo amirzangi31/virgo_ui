@@ -21,7 +21,8 @@ type ButtonProps = ButtonVariantsProps & {
       onClick?: () => void,
       isLoading?: boolean
       isDisabled?: boolean
-      loader?: ReactNode
+      loader?: ReactNode,
+      type?: "button" | "submit" | "reset";
 }
 
 
@@ -90,6 +91,7 @@ const ButtonVariants: ButtonVariantsFunction = cva(
 export default function Button({
       variant,
       size,
+      type = "button",
       rounded,
       className = "",
       children,
@@ -99,7 +101,7 @@ export default function Button({
       loader
 }: ButtonProps): JSX.Element {
       return (
-            <button onClick={onClick} disabled={isDisabled} className={cn(ButtonVariants({
+            <button type={type} onClick={onClick} disabled={isDisabled} className={cn(ButtonVariants({
                   variant, size,
                   rounded,
             }), className)}>{isLoading ? loader ? loader : "درحال بارگذاری" : children}</button>
