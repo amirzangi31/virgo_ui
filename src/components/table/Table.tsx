@@ -41,6 +41,7 @@ type TableProps<T> = TableVariantsProps & {
   nextButton?: ReactNode
   prevButton?: ReactNode
   tableClassname?: string
+  emptyText?: string
 };
 
 /**
@@ -150,7 +151,8 @@ const Table = <T,>({
   prevButton,
   onRowSelect,
   tableClassname,
-  textColor
+  textColor,
+  emptyText
 }: TableProps<T>): JSX.Element => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -255,6 +257,16 @@ const Table = <T,>({
             </tr>
           ))}
 
+          {
+            paginatedData.length === 0 && (
+              <div className={cn(
+                "flex justify-center items-center gap-2 min-h-[6.25rem] w-full",
+                TableTextColorVariants({ textColor })
+              )}>
+                {emptyText ? emptyText : "هیچ اطلاعاتی برای نمایش وجود ندارد"}
+              </div>
+            )
+          }
 
         </tbody>
 
