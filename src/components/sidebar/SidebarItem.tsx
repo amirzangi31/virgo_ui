@@ -51,11 +51,13 @@ const SidebarItem = ({
       isOpen
 }: SidebarItemProps) => {
       return (
-            <div className={cn(
+            <div
+                  title={!isOpen ? text : ""}
+                  className={cn(
 
-                  SidebarItemVariants({ isOpen }),
-                  className
-            )}>
+                        SidebarItemVariants({ isOpen }),
+                        className
+                  )}>
                   <span className={cn(
                         " flex justify-center items-center",
                         iconClassName

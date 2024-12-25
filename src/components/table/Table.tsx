@@ -2,6 +2,7 @@ import React, { ReactNode, useState } from "react";
 import { cva } from "class-variance-authority";
 import cn from "../../utils/cnFun";
 import { BorderStyle, ColorType, SizeType } from "../../types/GlobalType";
+import { Loader } from "../Loader";
 
 
 type Variant = ColorType
@@ -36,20 +37,27 @@ type TableProps<T> = TableVariantsProps & {
   onRowSelect?: (selectedRows: number[]) => void;
   columnWidths?: string[];
   minWidth?: MinWidth;
-  pagination?: boolean;
+  pagination?: ReactNode;
   rowsPerPage?: number;
-  nextButton?: ReactNode
-  prevButton?: ReactNode
-  tableClassname?: string
-  emptyText?: string,
-  emptyClassname?: string
+  nextButton?: ReactNode;
+  prevButton?: ReactNode;
+  tableClassname?: string;
+  emptyText?: string;
+  emptyClassname?: string;
+  footer?: boolean;
+  asyncSortableFun?: (direction: "asc" | "desc", key: keyof T) => Promise<void>;
+  upSortIcon?: ReactNode;
+  downSortIcon?: ReactNode;
+  sortLoader?: ReactNode,
+  refetch?: () => void
+  refetchLoading?: boolean
 };
 
 /**
  * Class Variants
  */
 const TableVariants = cva(
-  "table-auto transition-all duration-300 text-center  rounded-full w-full  overflow-hidden overflow-x-auto border border-primary",
+  "relative table-auto transition-all duration-300 text-center  rounded-full w-full  overflow-hidden overflow-x-auto border border-primary",
   {
     variants: {
 
@@ -146,20 +154,24 @@ const Table = <T,>({
   minWidth,
   disabledColumns = [],
   enableRowSelect = false,
-  pagination = false,
+  pagination ,
   rowsPerPage = 10,
-  nextButton,
-  prevButton,
   onRowSelect,
   tableClassname,
   textColor,
   emptyClassname,
-  emptyText
+  emptyText,
+  upSortIcon,
+  downSortIcon,
+  sortLoader,
+  refetch,
+  refetchLoading,
+  asyncSortableFun
 }: TableProps<T>): JSX.Element => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: keyof T; direction: "asc" | "desc" } | null>(null);
-
+  const [sortLoading, setSortLoading] = useState(false)
   const toggleRowSelect = (rowIndex: number) => {
     const updatedSelectedRows = selectedRows.includes(rowIndex)
       ? selectedRows.filter((index) => index !== rowIndex)
@@ -167,8 +179,19 @@ const Table = <T,>({
     setSelectedRows(updatedSelectedRows);
     if (onRowSelect) onRowSelect(updatedSelectedRows);
   };
-
-  const handleSort = (key: keyof T) => {
+  console.log(sortLoading);
+  const handleSort = async (key: keyof T) => {
+    if (asyncSortableFun) {
+      setSortLoading(true);
+      const newDirection = sortConfig?.direction === "asc" ? "desc" : "asc";
+      try {
+        setSortConfig({ key, direction: newDirection });
+        await asyncSortableFun(newDirection, key);
+      } finally {
+        setSortLoading(false);
+      }
+      return;
+    }
     if (!sortConfig || sortConfig.key !== key) {
       setSortConfig({ key, direction: "asc" });
     } else {
@@ -177,6 +200,7 @@ const Table = <T,>({
   };
 
   const sortedData = React.useMemo(() => {
+    if (asyncSortableFun) return data;
     if (!sortConfig) return data;
     return [...data].sort((a, b) => {
       const aValue = a[sortConfig.key];
@@ -204,8 +228,20 @@ const Table = <T,>({
         minWidth
       }),
       className
-
     )}>
+      {refetch && (
+        <button type="button" className={cn(
+          "  absolute left-3 top-2 ",
+          {
+            "animate-spin": refetchLoading
+          }
+
+        )} onClick={refetch}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.6953 -0.304688C15.1048 -0.304688 18.381 1.18103 20.6477 3.71436V0.457217C20.6477 0.133408 20.8953 -0.114211 21.2191 -0.114211C21.5429 -0.114211 21.7906 0.133408 21.7906 0.457217V5.21912C21.7906 5.54293 21.5429 5.79055 21.2191 5.79055H16.4572C16.1334 5.79055 15.8858 5.54293 15.8858 5.21912C15.8858 4.89531 16.1334 4.64769 16.4572 4.64769H19.962C17.8858 2.2096 14.9144 0.83817 11.6953 0.83817C5.71436 0.83817 0.838169 5.71436 0.838169 11.6953C0.838169 12.0191 0.59055 12.2667 0.266741 12.2667C-0.0570687 12.2667 -0.304688 12.0191 -0.304688 11.6953C-0.304688 5.08579 5.08579 -0.304688 11.6953 -0.304688ZM2.1715 17.6001H6.93341C7.25722 17.6001 7.50484 17.8477 7.50484 18.1715C7.50484 18.4953 7.25722 18.7429 6.93341 18.7429H3.44769C5.52388 21.181 8.47626 22.5525 11.6953 22.5525C17.6763 22.5525 22.5525 17.6763 22.5525 11.6953C22.5525 11.3715 22.8001 11.1239 23.1239 11.1239C23.4477 11.1239 23.6953 11.3715 23.6953 11.6953C23.6953 18.3048 18.3048 23.6953 11.6953 23.6953C8.28579 23.6953 5.0096 22.2096 2.74293 19.6763V22.9334C2.74293 23.2572 2.49531 23.5048 2.1715 23.5048C1.84769 23.5048 1.60007 23.2572 1.60007 22.9334V18.1715C1.60007 17.8477 1.84769 17.6001 2.1715 17.6001Z" fill="white" />
+          </svg>
+        </button>
+      )}
       <table
         className={`${tableClassname} px-4 w-full`}
       >
@@ -229,8 +265,10 @@ const Table = <T,>({
                 style={{ width: column.width || "auto" }}
                 onClick={() => column.sortable && handleSort(column.key)}
               >
-                {column.label}
-                {sortConfig?.key === column.key && (sortConfig.direction === "asc" ? " 🔼" : " 🔽")}
+                <div className="flex justify-center items-center flex-row gap-1">
+                  {column.label}
+                  {sortLoading ? sortConfig?.key === column.key && <span className="scale-50">{sortLoader || <Loader size="sm" variant="white" />}</span> : sortConfig?.key === column.key && (sortConfig?.direction === "asc" ? upSortIcon ? upSortIcon : "🔼" : downSortIcon ? downSortIcon : " 🔽")}
+                </div>
               </th>
             ))}
           </tr>
@@ -258,9 +296,6 @@ const Table = <T,>({
               ))}
             </tr>
           ))}
-
-
-
         </tbody>
 
       </table>
@@ -283,7 +318,7 @@ const Table = <T,>({
             variant
           })
         )}>
-          {pagination ? pagination : "test"}
+          {pagination ? pagination : "test"}  
         </div>
       )}
     </div>

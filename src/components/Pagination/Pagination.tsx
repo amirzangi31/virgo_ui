@@ -12,7 +12,6 @@ type ButtonVariantsProps = {
     rounded?: RoundedType;
     size?: Size;
     activeVariant?: Variant;
-
 };
 
 type PaginationProps = ButtonVariantsProps & {
@@ -20,17 +19,17 @@ type PaginationProps = ButtonVariantsProps & {
     variant: Variant;
     size: Size;
     rounded?: RoundedType;
-    currentPage: number; // صفحه فعلی
-    onPageChange: (page: number) => void; // تابع تغییر صفحه
-    className?: string; // کلاس‌های سفارشی
-    nextLabel?: React.ReactNode; // آیکون یا متن دکمه بعدی
-    previousLabel?: React.ReactNode; // آیکون یا متن دکمه قبلی
-    breakLabel?: React.ReactNode; // متن جداکننده (مثل ...)
-    pageRangeDisplayed?: number; // تعداد صفحات نمایش داده‌شده در وسط
-    marginPagesDisplayed?: number; // تعداد صفحات در ابتدا و انتها
-    activeClassName?: string; // کلاس فعال
-    disabledClassName?: string; // کلاس غیرفعال
-    renderOnZeroPageCount?: (() => React.ReactNode) | null; // رفتار برای حالت صفر صفحه
+    currentPage: number;
+    onPageChange: (page: number) => void;
+    className?: string;
+    nextLabel?: React.ReactNode;
+    previousLabel?: React.ReactNode;
+    breakLabel?: React.ReactNode;
+    pageRangeDisplayed?: number;
+    marginPagesDisplayed?: number;
+    activeClassName?: string;
+    disabledClassName?: string;
+    renderOnZeroPageCount?: (() => React.ReactNode) | null;
 };
 
 type ButtonVariantsFunction = (props: ButtonVariantsProps) => string;
@@ -130,34 +129,54 @@ export default function CustomPagination({
 
     const generatePageButtons = () => {
         const pages: React.ReactNode[] = [];
+        if (pageCount === 1) {
+            pages.push(
+                <button
+                    key={1}
+                    onClick={() => handlePageClick(1)}
+                    className={cn(buttonStyles({ variant, activeVariant }))}
+                >
+                    1
+                </button>
+            );
+            return pages;
+        }
+        // دکمه‌های شروع
+        pages.push(...generateButtonsInRange(1, Math.min(marginPagesDisplayed, pageCount)));
 
-        
-        pages.push(...generateButtonsInRange(1, marginPagesDisplayed));
-
-     
+        // نمایش Break Label اگر فاصله بین صفحات زیاد باشد
         if (currentPage > marginPagesDisplayed + pageRangeDisplayed) {
             pages.push(<span key="break-start" className={disabledClassName}>{breakLabel}</span>);
         }
-        pages.push(
-            ...generateButtonsInRange(
-                Math.max(marginPagesDisplayed + 1, currentPage - Math.floor(pageRangeDisplayed / 2)),
-                Math.min(pageCount - marginPagesDisplayed, currentPage + Math.floor(pageRangeDisplayed / 2))
-            )
+
+        // محاسبه بازه میانی
+        const startPage = Math.max(
+            marginPagesDisplayed + 1,
+            currentPage - Math.floor(pageRangeDisplayed / 2)
+        );
+        const endPage = Math.min(
+            pageCount - marginPagesDisplayed,
+            currentPage + Math.floor(pageRangeDisplayed / 2)
         );
 
-        // صفحات انتهایی
+        pages.push(...generateButtonsInRange(startPage, endPage));
+
+        // نمایش Break Label اگر فاصله بین صفحات زیاد باشد
         if (currentPage < pageCount - pageRangeDisplayed - marginPagesDisplayed) {
             pages.push(<span key="break-end" className={disabledClassName}>{breakLabel}</span>);
         }
+
+        // دکمه‌های انتها
         pages.push(
             ...generateButtonsInRange(
-                Math.max(pageCount - marginPagesDisplayed + 1, currentPage + Math.floor(pageRangeDisplayed / 2)),
+                Math.max(pageCount - marginPagesDisplayed + 1, endPage + 1), // اصلاح این خط
                 pageCount
             )
         );
 
         return pages;
     };
+
 
     return (
         <div className={`flex items-center gap-2 ${className}`}>

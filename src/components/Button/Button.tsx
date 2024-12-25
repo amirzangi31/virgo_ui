@@ -29,6 +29,10 @@ type ButtonProps = ButtonVariantsProps & {
 
 type ButtonVariantsFunction = (props: ButtonVariantsProps) => string;
 
+
+
+
+
 const ButtonVariants: ButtonVariantsFunction = cva(
       "flex justify-center items-center gap-2 px-4  transition-all duration-300 min-w-[180px]   cursor-pointer rounded-full disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none",
       {
@@ -105,7 +109,7 @@ export default function Button({
             <button type={type} onClick={onClick} disabled={isDisabled} className={cn(ButtonVariants({
                   variant, size,
                   rounded,
-            }), className)}>{isLoading ? loader ? loader : <Loader  /> : children}</button>
+            }), className)}>{isLoading ? loader ? loader : <Loader variant='white' /> : children}</button>
       )
 }
 

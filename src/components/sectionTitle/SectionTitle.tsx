@@ -75,12 +75,12 @@ export default function SectionTitle({
       children
 }: SectionTitleProps): JSX.Element {
       return (
-            <p className={cn(
+            <div className={cn(
                   SectionTitleVariants({ variant, size }),
                   className
             )}>
                   {children}
-            </p>
+            </div>
       )
 }
 

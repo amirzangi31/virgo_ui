@@ -43,8 +43,10 @@ const SidebarDropdown = ({
       return (
             <>
                   <button type="button"
+                        title={!isOpen ? title : ""}
+
                         className={cn(SidebarItemVariants({ isOpen }))}
-                        onClick={handler} 
+                        onClick={handler}
                   >
                         {icon} {isOpen && title}{" "}
                         {isOpen ? (
@@ -71,7 +73,7 @@ const SidebarDropdown = ({
                               )
                         ) : null}
                   </button>
-                  {open && <div className="flex justify-start items-start gap-2 px-4">{children}</div>}
+                  {open && <div className="flex justify-start items-start gap-2 px-4 flex-col">{children}</div>}
             </>
       );
 };

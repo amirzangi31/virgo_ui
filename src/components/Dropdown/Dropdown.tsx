@@ -14,7 +14,7 @@ const dropdownVariants = cva("relative inline-block", {
 });
 
 const dropdownContentVariants = cva(
-  "absolute hidden bg-white text-black shadow-lg p-4 z-10 ",
+  "absolute hidden bg-white text-black shadow-lg p-4 z-10 max-h-[12.25rem] overflow-y-auto",
   {
     variants: {
       rounded: {
@@ -33,9 +33,10 @@ const dropdownContentVariants = cva(
         center: "left-1/2 transform -translate-x-1/2",
       },
       minWidth: {
-        sm: "min-w-[100px]",
+        sm: "min-w-[6.25rem]",
         md: "min-w-[140px]",
-        lg: "min-w-[200px]",
+        lg: "min-w-[12.25rem]",
+        full : "min-w-full",
         custom: "",
       },
     },
@@ -43,7 +44,7 @@ const dropdownContentVariants = cva(
       open: false,
       rounded: "lg",
       position: "left",
-      minWidth: "md",
+      minWidth: "full",
     },
   }
 );
@@ -131,22 +132,22 @@ type DropdownContentVariants = {
 
 type DropdownTriggerVariants = {
   color:
-    | "primary"
-    | "primary_outlined"
-    | "secondary"
-    | "secondary_outlined"
-    | "warning"
-    | "warning_outlined"
-    | "danger"
-    | "danger_outlined"
-    | "inverse"
-    | "inverse_outlined"
-    | "success"
-    | "success_outlined"
-    | "purple"
-    | "purple_outlined"
-    | "default"
-    | "default_outlined";
+  | "primary"
+  | "primary_outlined"
+  | "secondary"
+  | "secondary_outlined"
+  | "warning"
+  | "warning_outlined"
+  | "danger"
+  | "danger_outlined"
+  | "inverse"
+  | "inverse_outlined"
+  | "success"
+  | "success_outlined"
+  | "purple"
+  | "purple_outlined"
+  | "default"
+  | "default_outlined";
   size: "sm" | "md" | "lg";
 };
 
@@ -170,7 +171,7 @@ type DropdownItemProps = {
   onClick?: () => void;
   position?: DropdownContentVariants["position"];
   color?: DropdownTriggerVariants["color"];
-  closeDropdown?: () => void;
+  CloseDropdown?: () => void;
 };
 
 export default function Dropdown({
@@ -188,7 +189,7 @@ export default function Dropdown({
     setIsOpen((prev) => !prev);
   };
 
-  const closeDropdown = () => {
+  const CloseDropdown = () => {
     setIsOpen(false);
   };
 
@@ -219,7 +220,7 @@ export default function Dropdown({
       >
         {React.Children.map(children, (child) =>
           React.isValidElement<DropdownItemProps>(child)
-            ? React.cloneElement(child, { closeDropdown })
+            ? React.cloneElement(child, { CloseDropdown })
             : child
         )}
       </div>
@@ -234,16 +235,15 @@ export function DropdownItem({
   children,
   onClick,
   color = "default",
-  closeDropdown,
-}: DropdownItemProps & { closeDropdown?: () => void }) {
+  CloseDropdown,
+}: DropdownItemProps & { CloseDropdown?: () => void }) {
   const handleClick = () => {
     if (onClick) onClick();
-    if (closeDropdown) closeDropdown(); 
+    if (CloseDropdown) CloseDropdown();
   };
 
   return (
     <div onClick={handleClick} className={cn(dropdownItemVariants({ color: color as never }))}>
-
       {children}
     </div>
   );

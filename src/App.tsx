@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Header from './components/header/Header'
-import { Button, Loader, Modal, Pagination, SectionTitle, Sidebar, Table, TextField } from './components'
+import { BackButton, Button, Loader, Modal, Pagination, SectionTitle, Sidebar, Table, TextField } from './components'
 import SidebarHeader from './components/sidebar/SidebarHeader'
 import SidebarItem from './components/sidebar/SidebarItem'
 import SidebarDropdown from './components/sidebar/SidebarDropdown'
@@ -8,6 +8,7 @@ import { HeaderMobile } from './components/headermobile'
 import { TableColumnUi } from './types/GlobalType'
 import { useForm, SubmitHandler } from 'react-hook-form';
 import SearchComponent from './components/SearchComponent/SearchComponent';
+import { cn } from './utils'
 
 type FormValues = {
       username: string;
@@ -49,6 +50,7 @@ const App = () => {
             console.log(`Page changed to: ${page}`);
             setCurrentPage(page);
       };
+
       return (
             <div className='flex justify-start items-start  flex-col h-screen bg-bg_content'>
                   <Header />
@@ -97,7 +99,6 @@ const App = () => {
                               <SectionTitle >
                                     est
                               </SectionTitle>
-                              <Loader label='درحال بارگذاری' />
                               <Table
                                     className='mt-8'
                                     data={data}
@@ -105,42 +106,30 @@ const App = () => {
                                     variant="primary"
                                     textColor='primary'
                                     size="lg"
-
+                                    asyncSortableFun={async (sort, key) => {
+                                          const res = await fetch("https://jsonplaceholder.typicode.com/posts")
+                                          const result = await res.json()
+                                          return result
+                                    }}
                                     border="solid"
                                     enableRowSelect={true}
-                                    pagination={true}
+                                    pagination={<Pagination
+                                          pageCount={pageCount} // تعداد کل صفحات
+                                          currentPage={currentPage} // صفحه فعلی
+                                          onPageChange={handlePageChange}
+                                          activeVariant='primary'
+                                          className="justify-center" // کلاس سفارشی
+                                          nextLabel={<BackButton />}
+                                          size='sm'
+                                          previousLabel={<BackButton />}
+                                          breakLabel={<span className="text-gray-400">...</span>} // جداکننده صفحات
+                                          activeClassName="bg-green-500 text-white" // استایل برای صفحه فعال
+                                          renderOnZeroPageCount={() => <p>No pages available</p>} // رفتار برای زمانی که صفحه‌ای وجود ندارد
+                                          variant={'primary'} />}
                                     onRowSelect={handleRowSelect}
                               />
-                              <TextField
-                                    label="نام کاربری"
-                                    name="username"
-                                    placeholder="نام کاربری را وارد کنید"
-                                    size="md"
-                                    rounded="lg"
-                                    register={register('username', { required: 'نام کاربری الزامی است' })}
-                                    error={errors.username}
-                              />
                         </div>
-                        <Button loader={<Loader variant='white' size='sm' />} isLoading={true}>
-                              dsaf
-                        </Button>
-                        <SearchComponent value='test' variant='white' changeHandler={() => console.log("0")} />
-                        <Pagination
-                              pageCount={pageCount} // تعداد کل صفحات
-                              currentPage={currentPage} // صفحه فعلی
-                              onPageChange={handlePageChange}
-                              className="justify-center" // کلاس سفارشی
-                              nextLabel={<span>
-                                    test
-                              </span>}
-                              previousLabel={// آیکون دکمه قبلی
-                                    <span>
-                                          test
-                                    </span>}
-                              breakLabel={<span className="text-gray-400">...</span>} // جداکننده صفحات
-                              activeClassName="bg-green-500 text-white" // استایل برای صفحه فعال
-                              renderOnZeroPageCount={() => <p>No pages available</p>} // رفتار برای زمانی که صفحه‌ای وجود ندارد
-                              variant={'default'} />
+
                   </main>
             </div>
       )
