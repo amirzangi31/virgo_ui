@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { cva } from "class-variance-authority";
 import cn from "../../utils/cnFun";
-const dropdownVariants = cva("relative inline-block", {
+
+const dropdownVariants = cva("relative inline-block peer-checked:dropdown-open", {
   variants: {
-    open: {
-      true: "dropdown-open",
-      false: "",
-    },
+
   },
   defaultVariants: {
     open: false,
@@ -14,7 +12,7 @@ const dropdownVariants = cva("relative inline-block", {
 });
 
 const dropdownContentVariants = cva(
-  "absolute hidden bg-white text-black shadow-lg p-4 z-10 max-h-[12.25rem] overflow-y-auto",
+  "transtion-all duration-300  bg-white text-black shadow-lg p-2 z-10 max-h-[12.25rem] overflow-y-auto flex justify-start items-center gap-1 flex-col",
   {
     variants: {
       rounded: {
@@ -24,7 +22,7 @@ const dropdownContentVariants = cva(
         full: "rounded-full",
       },
       open: {
-        true: "block",
+        true: "flex",
         false: "hidden",
       },
       position: {
@@ -36,7 +34,7 @@ const dropdownContentVariants = cva(
         sm: "min-w-[6.25rem]",
         md: "min-w-[140px]",
         lg: "min-w-[12.25rem]",
-        full : "min-w-full",
+        full: "min-w-full",
         custom: "",
       },
     },
@@ -50,7 +48,7 @@ const dropdownContentVariants = cva(
 );
 
 const dropdownItemVariants = cva(
-  "p-2 cursor-pointer transition-colors duration-200 rounded",
+  "p-2 cursor-pointer transition-colors duration-200 rounded w-full flex justify-center items-center text-center",
   {
     variants: {
       hoverable: {
@@ -64,9 +62,7 @@ const dropdownItemVariants = cva(
         danger: "hover:bg-error hover:text-white",
         inverse: "hover:bg-gray-600 hover:text-white",
         success: "hover:bg-success hover:text-white",
-        purple: "hover:bg-purple-500 hover:text-white",
         default: "hover:bg-gray-500 hover:text-white",
-        white: "hover:bg-white hover:text-black",
       },
     },
     defaultVariants: {
@@ -77,39 +73,43 @@ const dropdownItemVariants = cva(
 );
 
 const dropdownTriggerVariants = cva(
-  "cursor-pointer flex justify-center items-center gap-2 px-4 transition-all duration-300 min-w-[180px] rounded-full disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none",
+  "flex justify-center items-center gap-2 px-4  transition-all duration-300 min-w-fit md:min-w-[11.25rem]   cursor-pointer rounded-full disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none",
+
   {
     variants: {
       color: {
         primary:
           "bg-primary hover:bg-white text-white hover:text-primary hover:border hover:border-primary",
-        primary_outlined: "border border-primary bg-transparent text-primary hover:bg-primary hover:text-white ",
+        primary_outlined: "border border-primary bg-primary text-primary hover:bg-primary hover:text-white ",
 
         secondary: "bg-secondary hover:bg-white text-white hover:text-secondary hover:border hover:border-secondary",
-        secondary_outlined: "border border-secondary bg-transparent text-secondary hover:bg-secondary hover:text-white ",
+        secondary_outlined: "border border-secondary bg-secondary text-secondary hover:bg-secondary hover:text-white ",
 
         warning:
           "bg-warning hover:bg-white text-white hover:text-warning hover:border hover:border-warning",
-        warning_outlined: "border border-warning bg-transparent text-warning hover:bg-warning hover:text-white ",
+        warning_outlined: "border border-warning bg-warning text-warning hover:bg-warning hover:text-white ",
         danger:
           "bg-error hover:bg-white text-white hover:text-error hover:border hover:border-error",
-        danger_outlined: "border border-error bg-transparent text-error hover:bg-error hover:text-white ",
+        danger_outlined: "border border-error bg-danger text-error hover:bg-error hover:text-white ",
 
         inverse:
           "bg-gray-600 hover:bg-white text-white hover:text-gray-600 hover:border hover:border-gray-600",
-        inverse_outlined: "border border-gray-600 bg-transparent text-gray-600 hover:bg-gray-600 hover:text-white ",
+        inverse_outlined: "border border-gray-600 bg-inverse text-gray-600 hover:bg-gray-600 hover:text-white ",
 
         success:
           "bg-success hover:bg-white text-white hover:text-success hover:border hover:border-success",
-        success_outlined: "border border-success bg-transparent text-success hover:bg-success hover:text-white ",
+        success_outlined: "border border-success bg-success text-success hover:bg-success hover:text-white ",
 
         purple:
           "bg-purple-500 hover:bg-white text-white hover:text-purple-500 hover:border hover:border-purple-500",
-        purple_outlined: "border border-purple-500 bg-transparent text-purple-500 hover:bg-purple-500 hover:text-white ",
+        purple_outlined: "border border-purple-500 bg-purple text-purple-500 hover:bg-purple-500 hover:text-white ",
 
         default:
           "bg-gray-500 hover:bg-white text-white hover:text-gray-500 hover:border hover:border-gray-500",
-        default_outlined: "border border-gray-500 bg-transparent text-gray-500 hover:bg-gray-500 hover:text-white ",
+        default_outlined: "border border-gray-500 bg-default text-gray-500 hover:bg-gray-500 hover:text-white ",
+
+        white:
+          "bg-white hover:bg-gray-100 text-gray-500 hover:text-gray-500 hover:border hover:border-gray-500",
       },
       size: {
         sm: "h-[2.5rem]",
@@ -123,65 +123,32 @@ const dropdownTriggerVariants = cva(
     },
   }
 );
-type DropdownContentVariants = {
-  rounded: "sm" | "md" | "lg" | "full";
-  open: "true" | "false";
-  position: "left" | "right" | "center";
-  minWidth: "sm" | "md" | "lg" | "custom";
-};
-
-type DropdownTriggerVariants = {
-  color:
-  | "primary"
-  | "primary_outlined"
-  | "secondary"
-  | "secondary_outlined"
-  | "warning"
-  | "warning_outlined"
-  | "danger"
-  | "danger_outlined"
-  | "inverse"
-  | "inverse_outlined"
-  | "success"
-  | "success_outlined"
-  | "purple"
-  | "purple_outlined"
-  | "default"
-  | "default_outlined";
-  size: "sm" | "md" | "lg";
-};
-
-
 
 type DropdownProps = {
+  name?: string,
   trigger: React.ReactNode;
-  children: React.ReactNode;
-  rounded?: DropdownContentVariants["rounded"];
-  triggerColor?: DropdownTriggerVariants["color"];
-  position?: DropdownContentVariants["position"];
-  minWidth?: DropdownContentVariants["minWidth"];
+  rounded?: "sm" | "md" | "lg" | "full";
+  triggerColor?: "primary" | "primary_outlined" | "secondary" | "secondary_outlined" | "warning" | "warning_outlined" | "danger" | "danger_outlined" | "inverse" | "inverse_outlined" | "success" | "success_outlined" | "purple" | "purple_outlined" | "default" | "default_outlined" | "white";
+  position?: "left" | "right" | "center";
+  minWidth?: "sm" | "md" | "lg" | "custom" | "full";
   customMinWidth?: string;
-  color?: string;
-};
-
-
-
-type DropdownItemProps = {
-  children: React.ReactNode;
-  onClick?: () => void;
-  position?: DropdownContentVariants["position"];
-  color?: DropdownTriggerVariants["color"];
-  CloseDropdown?: () => void;
+  contentClassName?: string;
+  content: { name: string | number | boolean, value: string | number }[],
+  itemHandler?: (item: any) => void
+  colorItem?: "primary" | "secondary" | "default" | "danger" | "inverse" | "success" | "default";
 };
 
 export default function Dropdown({
   trigger,
-  children,
-  rounded,
-  triggerColor,
-  position,
-  minWidth = "md",
+  rounded = "lg",
+  triggerColor = "primary",
+  colorItem,
+  position = "left",
+  minWidth = "full",
   customMinWidth,
+  content,
+  itemHandler,
+  contentClassName
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -189,62 +156,82 @@ export default function Dropdown({
     setIsOpen((prev) => !prev);
   };
 
-  const CloseDropdown = () => {
-    setIsOpen(false);
-  };
 
   return (
     <div
-      className={cn(dropdownVariants({ open: isOpen }))}
-      onMouseLeave={() => setIsOpen(false)}
+      className={cn(dropdownVariants())}
     >
-      <div
+      {isOpen && <span onClick={toggleDropdown} className="fixed top-0 left-0 size-full block z-[10] "></span>}
+      <button
+        type="button"
         className={cn(dropdownTriggerVariants({ color: triggerColor }))}
         onClick={toggleDropdown}
       >
         {trigger}
-      </div>
-      <div
-        className={cn(
-          dropdownContentVariants({
-            open: isOpen,
-            rounded,
-            position: position as "left" | "right" | "center",
-            minWidth: customMinWidth
-              ? "custom"
-              : (minWidth as "sm" | "md" | "lg" | "custom"),
-          }),
-          customMinWidth,
+      </button>
 
+
+      <div
+        style={customMinWidth ? { minWidth: customMinWidth } : undefined}
+        className={cn(
+          "py-2 absolute w-full  z-10",
+          contentClassName
         )}
+
       >
-        {React.Children.map(children, (child) =>
-          React.isValidElement<DropdownItemProps>(child)
-            ? React.cloneElement(child, { CloseDropdown })
-            : child
-        )}
+        <div
+          className={cn(
+            dropdownContentVariants({
+              open: isOpen,
+              rounded,
+              position,
+              minWidth: customMinWidth ? "custom" : minWidth,
+            }),
+          )}>
+
+          {content.map((item: { name: string | number | boolean, value: string | number }) => (
+            <button
+              type="button"
+              onClick={() => {
+                if (itemHandler) itemHandler(item)
+                toggleDropdown()
+              }}
+              key={item.value}
+              className={cn(dropdownItemVariants({ color: colorItem }))}
+            >
+              {item.name}
+            </button>
+          ))}
+        </div>
+
       </div>
     </div>
   );
 }
 
-
-
+type DropdownItemProps = {
+  children: React.ReactNode;
+  onClick?: () => void;
+  color?: "primary" | "secondary" | "default";
+};
 
 export function DropdownItem({
   children,
   onClick,
   color = "default",
-  CloseDropdown,
-}: DropdownItemProps & { CloseDropdown?: () => void }) {
+}: DropdownItemProps) {
+
   const handleClick = () => {
     if (onClick) onClick();
-    if (CloseDropdown) CloseDropdown();
   };
 
   return (
-    <div onClick={handleClick} className={cn(dropdownItemVariants({ color: color as never }))}>
+    <button
+      type="button"
+      onClick={handleClick}
+      className={cn(dropdownItemVariants({ color }))}
+    >
       {children}
-    </div>
+    </button>
   );
 }

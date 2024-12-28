@@ -34,40 +34,40 @@ type ButtonVariantsFunction = (props: ButtonVariantsProps) => string;
 
 
 const ButtonVariants: ButtonVariantsFunction = cva(
-      "flex justify-center items-center gap-2 px-4  transition-all duration-300 min-w-[180px]   cursor-pointer rounded-full disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none",
+      "flex justify-center items-center gap-2 px-4  transition-all duration-300 min-w-fit md:min-w-[11.25rem]   cursor-pointer rounded-full disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none",
       {
 
             variants: {
                   variant: {
                         primary:
                               "bg-primary hover:bg-white text-white hover:text-primary hover:border hover:border-primary",
-                        primary_outlined: "border border-primary bg-transparent text-primary hover:bg-primary hover:text-white ",
+                        primary_outlined: "border border-primary  hover:bg-primary hover:text-white ",
 
                         secondary: "bg-secondary hover:bg-white text-white hover:text-secondary hover:border hover:border-secondary",
-                        secondary_outlined: "border border-secondary bg-transparent text-secondary hover:bg-secondary hover:text-white ",
+                        secondary_outlined: "border border-secondary  hover:bg-secondary hover:text-white ",
 
                         warning:
                               "bg-warning hover:bg-white text-white hover:text-warning hover:border hover:border-warning",
-                        warning_outlined: "border border-warning bg-transparent text-warning hover:bg-warning hover:text-white ",
+                        warning_outlined: "border border-warning  hover:bg-warning hover:text-white ",
                         danger:
                               "bg-error hover:bg-white text-white hover:text-error hover:border hover:border-error",
-                        danger_outlined: "border border-error bg-transparent text-error hover:bg-error hover:text-white ",
+                        danger_outlined: "border border-error text-error hover:bg-error hover:text-white ",
 
                         inverse:
                               "bg-gray-600 hover:bg-white text-white hover:text-gray-600 hover:border hover:border-gray-600",
-                        inverse_outlined: "border border-gray-600 bg-transparent text-gray-600 hover:bg-gray-600 hover:text-white ",
+                        inverse_outlined: "border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white ",
 
                         success:
                               "bg-success hover:bg-white text-white hover:text-success hover:border hover:border-success",
-                        success_outlined: "border border-success bg-transparent text-success hover:bg-success hover:text-white ",
+                        success_outlined: "border border-success text-success hover:bg-success hover:text-white ",
 
                         purple:
                               "bg-purple-500 hover:bg-white text-white hover:text-purple-500 hover:border hover:border-purple-500",
-                        purple_outlined: "border border-purple-500 bg-transparent text-purple-500 hover:bg-purple-500 hover:text-white ",
+                        purple_outlined: "border border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-white ",
 
                         default:
                               "bg-gray-500 hover:bg-white text-white hover:text-gray-500 hover:border hover:border-gray-500",
-                        default_outlined: "border border-gray-500 bg-transparent text-gray-500 hover:bg-gray-500 hover:text-white ",
+                        default_outlined: "border border-gray-500 text-gray-500 hover:bg-gray-500 hover:text-white ",
 
                   },
                   size: {

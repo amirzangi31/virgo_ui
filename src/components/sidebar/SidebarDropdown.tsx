@@ -48,7 +48,7 @@ const SidebarDropdown = ({
                         className={cn(SidebarItemVariants({ isOpen }))}
                         onClick={handler}
                   >
-                        {icon} {isOpen && title}{" "}
+                        {icon} {isOpen && <span className="line-clamp-1">{title}</span>}{" "}
                         {isOpen ? (
                               arrowIcon || (
                                     <svg

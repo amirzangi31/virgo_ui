@@ -21,7 +21,7 @@ input {
 }
 
 ::-webkit-scrollbar {
-  @apply w-[0.625rem] h-[0.625rem];
+  @apply size-[0.3125rem]  md:size-[0.625rem];
 }
 
 /* Track */

@@ -3,6 +3,7 @@ import { cva } from "class-variance-authority";
 import cn from "../../utils/cnFun";
 import { BorderStyle, ColorType, SizeType } from "../../types/GlobalType";
 import { Loader } from "../Loader";
+import { Dropdown } from "../dropdown";
 
 
 type Variant = ColorType
@@ -38,6 +39,7 @@ type TableProps<T> = TableVariantsProps & {
   columnWidths?: string[];
   minWidth?: MinWidth;
   pagination?: ReactNode;
+  loading?: boolean;
   rowsPerPage?: number;
   nextButton?: ReactNode;
   prevButton?: ReactNode;
@@ -51,13 +53,18 @@ type TableProps<T> = TableVariantsProps & {
   sortLoader?: ReactNode,
   refetch?: () => void
   refetchLoading?: boolean
+  rowCount?: {
+    count: number,
+    handler: (value: number) => void,
+    cotent: { name: string | number | boolean, value: string | number }[],
+  }
 };
 
 /**
  * Class Variants
  */
 const TableVariants = cva(
-  "relative table-auto transition-all duration-300 text-center  rounded-full w-full  overflow-hidden overflow-x-auto border border-primary",
+  "relative table-auto transition-all duration-300 text-center  rounded-full w-full  overflow-hidden overflow-x-auto border border-primary realtive",
   {
     variants: {
 
@@ -154,7 +161,7 @@ const Table = <T,>({
   minWidth,
   disabledColumns = [],
   enableRowSelect = false,
-  pagination ,
+  pagination,
   rowsPerPage = 10,
   onRowSelect,
   tableClassname,
@@ -166,7 +173,9 @@ const Table = <T,>({
   sortLoader,
   refetch,
   refetchLoading,
-  asyncSortableFun
+  asyncSortableFun,
+  rowCount,
+  loading
 }: TableProps<T>): JSX.Element => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -179,7 +188,6 @@ const Table = <T,>({
     setSelectedRows(updatedSelectedRows);
     if (onRowSelect) onRowSelect(updatedSelectedRows);
   };
-  console.log(sortLoading);
   const handleSort = async (key: keyof T) => {
     if (asyncSortableFun) {
       setSortLoading(true);
@@ -229,19 +237,7 @@ const Table = <T,>({
       }),
       className
     )}>
-      {refetch && (
-        <button type="button" className={cn(
-          "  absolute left-3 top-2 ",
-          {
-            "animate-spin": refetchLoading
-          }
 
-        )} onClick={refetch}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M11.6953 -0.304688C15.1048 -0.304688 18.381 1.18103 20.6477 3.71436V0.457217C20.6477 0.133408 20.8953 -0.114211 21.2191 -0.114211C21.5429 -0.114211 21.7906 0.133408 21.7906 0.457217V5.21912C21.7906 5.54293 21.5429 5.79055 21.2191 5.79055H16.4572C16.1334 5.79055 15.8858 5.54293 15.8858 5.21912C15.8858 4.89531 16.1334 4.64769 16.4572 4.64769H19.962C17.8858 2.2096 14.9144 0.83817 11.6953 0.83817C5.71436 0.83817 0.838169 5.71436 0.838169 11.6953C0.838169 12.0191 0.59055 12.2667 0.266741 12.2667C-0.0570687 12.2667 -0.304688 12.0191 -0.304688 11.6953C-0.304688 5.08579 5.08579 -0.304688 11.6953 -0.304688ZM2.1715 17.6001H6.93341C7.25722 17.6001 7.50484 17.8477 7.50484 18.1715C7.50484 18.4953 7.25722 18.7429 6.93341 18.7429H3.44769C5.52388 21.181 8.47626 22.5525 11.6953 22.5525C17.6763 22.5525 22.5525 17.6763 22.5525 11.6953C22.5525 11.3715 22.8001 11.1239 23.1239 11.1239C23.4477 11.1239 23.6953 11.3715 23.6953 11.6953C23.6953 18.3048 18.3048 23.6953 11.6953 23.6953C8.28579 23.6953 5.0096 22.2096 2.74293 19.6763V22.9334C2.74293 23.2572 2.49531 23.5048 2.1715 23.5048C1.84769 23.5048 1.60007 23.2572 1.60007 22.9334V18.1715C1.60007 17.8477 1.84769 17.6001 2.1715 17.6001Z" fill="white" />
-          </svg>
-        </button>
-      )}
       <table
         className={`${tableClassname} px-4 w-full`}
       >
@@ -276,7 +272,7 @@ const Table = <T,>({
         <tbody className={cn(
           TableTextColorVariants({ textColor })
         )}>
-          {paginatedData.map((row, rowIndex) => (
+          {!loading && paginatedData.map((row, rowIndex) => (
             <tr key={rowIndex} className="border-b hover:bg-gray-100 hover:text-black transition duration-200 ease-in-out ">
               {enableRowSelect && (
                 <td>
@@ -296,31 +292,91 @@ const Table = <T,>({
               ))}
             </tr>
           ))}
+
+
+          {loading && Array.from({ length: 7 }).map((_, index) => (
+            <tr className="" key={`loading-${index}`}>
+              {enableRowSelect && (
+                <td className="border-b  transition duration-200 ease-in-out p-2">
+                  <div className="  rounded-sm h-[2rem]   bg-gray-200 animate-pulse">
+
+                  </div>
+                </td>
+              )}
+              {
+                columns.map((column, index) => (
+                  <td key={`${String(column.key)}-${index}`} className="border-b  transition duration-200 ease-in-out p-2" >
+                    <div className="  rounded-sm h-[2rem]   bg-gray-200 animate-pulse">
+
+                    </div>
+                  </td>
+                ))
+              }
+            </tr>
+          ))}
+          {
+            paginatedData.length === 0 && !loading && (
+              <tr >
+                <td colSpan={columns.length + 1} >
+                  <div className={cn(
+                    "flex justify-center items-center gap-2 min-h-[6.25rem] w-full text-sm",
+                    TableTextColorVariants({ textColor }),
+                    emptyClassname
+                  )}>
+                    {emptyText ? emptyText : "هیچ اطلاعاتی برای نمایش وجود ندارد"}
+                  </div>
+                </td>
+              </tr>
+            )
+          }
+
+          <tr >
+            <td colSpan={columns.length + 1} className={cn(TableColorVariants({
+              variant
+            }))}>
+              {pagination && (
+                <div className={cn(
+                  "flex  justify-center items-center gap-4 py-1 ",
+                  {
+                    "justify-between px-4": rowCount && pagination
+                  },
+
+                )}>
+                  <div className="md:w-1/3 flex justify-start items-center">
+                    {refetch && (
+                      <button type="button" className={cn(
+                        " ",
+                        {
+                          "animate-spin": refetchLoading
+                        }
+
+                      )} onClick={refetch}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M11.6953 -0.304688C15.1048 -0.304688 18.381 1.18103 20.6477 3.71436V0.457217C20.6477 0.133408 20.8953 -0.114211 21.2191 -0.114211C21.5429 -0.114211 21.7906 0.133408 21.7906 0.457217V5.21912C21.7906 5.54293 21.5429 5.79055 21.2191 5.79055H16.4572C16.1334 5.79055 15.8858 5.54293 15.8858 5.21912C15.8858 4.89531 16.1334 4.64769 16.4572 4.64769H19.962C17.8858 2.2096 14.9144 0.83817 11.6953 0.83817C5.71436 0.83817 0.838169 5.71436 0.838169 11.6953C0.838169 12.0191 0.59055 12.2667 0.266741 12.2667C-0.0570687 12.2667 -0.304688 12.0191 -0.304688 11.6953C-0.304688 5.08579 5.08579 -0.304688 11.6953 -0.304688ZM2.1715 17.6001H6.93341C7.25722 17.6001 7.50484 17.8477 7.50484 18.1715C7.50484 18.4953 7.25722 18.7429 6.93341 18.7429H3.44769C5.52388 21.181 8.47626 22.5525 11.6953 22.5525C17.6763 22.5525 22.5525 17.6763 22.5525 11.6953C22.5525 11.3715 22.8001 11.1239 23.1239 11.1239C23.4477 11.1239 23.6953 11.3715 23.6953 11.6953C23.6953 18.3048 18.3048 23.6953 11.6953 23.6953C8.28579 23.6953 5.0096 22.2096 2.74293 19.6763V22.9334C2.74293 23.2572 2.49531 23.5048 2.1715 23.5048C1.84769 23.5048 1.60007 23.2572 1.60007 22.9334V18.1715C1.60007 17.8477 1.84769 17.6001 2.1715 17.6001Z" fill="white" />
+                        </svg>
+                      </button>
+                    )}</div>
+                  {pagination ? <div className="md:w-1/3">{pagination}</div> : "test"}
+                  {rowCount && <div className="md:w-1/3 flex justify-end items-center">
+                    <Dropdown trigger={rowCount.count}
+                      contentClassName="bottom-full"
+                      triggerColor="white"
+                      itemHandler={(value) => {
+                        if (rowCount.handler) rowCount.handler(value.value)
+                      }} colorItem='primary' position='left' content={rowCount.cotent || [{ value: 10, name: 10 },
+                      { value: 20, name: 20 },
+                      { value: 50, name: 50 },
+                      ]} name='filter_button' /></div>}
+                </div>
+              )}</td>
+          </tr>
         </tbody>
 
       </table>
-      {
-        paginatedData.length === 0 && (
-          <div className={cn(
-            "flex justify-center items-center gap-2 min-h-[6.25rem] w-full text-sm",
-            TableTextColorVariants({ textColor }),
-            emptyClassname
-          )}>
-            {emptyText ? emptyText : "هیچ اطلاعاتی برای نمایش وجود ندارد"}
-          </div>
-        )
-      }
-      {pagination && (
 
-        <div className={cn(
-          "mt-4  flex justify-center items-center gap-4 py-1",
-          TableColorVariants({
-            variant
-          })
-        )}>
-          {pagination ? pagination : "test"}  
-        </div>
-      )}
+
+
+
     </div>
   );
 };

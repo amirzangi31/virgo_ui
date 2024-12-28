@@ -25,12 +25,12 @@ type SidebarProps = SidebarVariantsProps & {
 type SidebarVariantsFunction = (props: SidebarVariantsProps) => string;
 
 const SidebarVariants: SidebarVariantsFunction = cva(
-      "fixed top-0  rounded-l-xl w-8/12  md:relative  bg-white md:rounded-xl shadow-shadow_category h-full px-4 overflow-auto  transition-all duration-300",
+      "fixed top-0 z-10  rounded-l-xl w-8/12  md:relative  bg-white md:rounded-xl shadow-shadow_category h-full px-4 overflow-auto  transition-all duration-300",
       {
             variants: {
                   isOpen: {
-                        true: "  md:w-[300px]",
-                        false: "-right-full ltr:-left-full md:w-[100px] md:right-0 md:ltr:left-0"
+                        true: "right-0 ltr:left-0  md:w-[18.75rem]",
+                        false: "-right-full ltr:-left-full md:w-[6.25rem] md:right-0 md:ltr:left-0"
                   }
 
             },
@@ -52,7 +52,7 @@ const SideBar = ({
             <>
                   {
                         isOpen &&
-                        <span onClick={onClose} className='md:hidden fixed left-0 top-0 backdrop-blur-md backdrop-brightness-50  w-full h-screen'></span>
+                        <span onClick={onClose} className='md:hidden fixed left-0 top-0 backdrop-blur-md backdrop-brightness-50  w-full h-screen z-10'></span>
                   }
                   <aside className={
                         cn(

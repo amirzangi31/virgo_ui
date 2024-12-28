@@ -14,5 +14,6 @@ export { Dropdown } from "./dropdown"
 export { SectionTitle } from "./sectionTitle"
 export { SearchComponent } from "./SearchComponent"
 export {Pagination} from "./Pagination"
+export {RadioButton} from "./radioButton"
 
 
