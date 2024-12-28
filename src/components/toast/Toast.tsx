@@ -19,7 +19,7 @@ type ToastProps = ToastVariantsProps & {
   iconclose?: JSX.Element;
   maxWidth?: "sm" | "md" | "lg";
   onClose: (id: number) => void;
-  expireAt?: number; 
+  expireAt?: number;
 };
 
 const toastStyles = cva(
@@ -57,11 +57,25 @@ const toastStyles = cva(
   }
 );
 
+
+const defaultCloseIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={2}
+    stroke="currentColor"
+    className="w-5 h-5 text-white cursor-pointer hover:text-gray-300"
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
+
 const Toast: React.FC<ToastProps> = ({
   id,
   message,
   iconmessage,
-  iconclose,
+  iconclose = defaultCloseIcon, 
   onClose,
   variant,
   rounded,
@@ -109,27 +123,21 @@ const ToastManager: React.FC<ToastManagerProps> = ({ initialToasts }) => {
     }));
     setToasts((prevToasts) => [...prevToasts, ...mappedToasts]);
   }, [initialToasts]);
-  
-
 
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now();
       setToasts((prevToasts) =>
-        prevToasts.filter((toast) => toast.expireAt! > now) 
+        prevToasts.filter((toast) => toast.expireAt! > now)
       );
-    }, 500); 
-  
-    return () => clearInterval(interval); 
-  }, []);
-  
+    }, 500);
 
+    return () => clearInterval(interval);
+  }, []);
 
   const removeToast = (id: number) => {
     setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
   };
-
-
 
   const positionStyles = {
     "top-left": "top-5 left-5",
