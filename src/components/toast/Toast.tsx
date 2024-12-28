@@ -15,10 +15,11 @@ type ToastProps = ToastVariantsProps & {
   id: number;
   title: string;
   message: string;
-  iconmessage?: JSX.Element; 
-  iconclose ?: JSX.Element;
+  iconmessage?: JSX.Element;
+  iconclose?: JSX.Element;
   maxWidth?: "sm" | "md" | "lg";
   onClose: (id: number) => void;
+  expireAt?: number; 
 };
 
 const toastStyles = cva(
@@ -49,6 +50,7 @@ const toastStyles = cva(
       },
     },
     defaultVariants: {
+      variant: "danger",
       maxWidth: "lg",
       rounded: "md",
     },
@@ -76,19 +78,22 @@ const Toast: React.FC<ToastProps> = ({
   return (
     <div className={cn(toastStyles({ variant, rounded, maxWidth }))}>
       <div className="flex justify-between w-full items-center">
-        <div className="flex items-center gap-2  p-2">
-        {iconmessage && <div className="mr-2">{iconmessage}</div>}
+        <div className="flex items-center gap-2 p-2">
+          {iconmessage && <div className="mr-2">{iconmessage}</div>}
           {message}
-         
         </div>
-        {iconclose && <div  onClick={() => onClose(id)} className="top-5 left-5">{iconclose}</div>}
+        {iconclose && (
+          <div onClick={() => onClose(id)} className="top-5 left-5">
+            {iconclose}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 type ToastManagerProps = {
-  initialToasts: Array<Omit<ToastProps, "id" | "onClose">>;
+  initialToasts: Array<Omit<ToastProps, "id" | "onClose" | "expireAt">>;
 };
 
 const ToastManager: React.FC<ToastManagerProps> = ({ initialToasts }) => {
@@ -99,14 +104,32 @@ const ToastManager: React.FC<ToastManagerProps> = ({ initialToasts }) => {
     const mappedToasts = initialToasts.map((toast, index) => ({
       ...toast,
       id: Date.now() + index,
+      expireAt: Date.now() + (toast.autoClose || 1000),
       onClose: removeToast,
     }));
-    setToasts(mappedToasts);
+    setToasts((prevToasts) => [...prevToasts, ...mappedToasts]);
   }, [initialToasts]);
+  
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      setToasts((prevToasts) =>
+        prevToasts.filter((toast) => toast.expireAt! > now) 
+      );
+    }, 500); 
+  
+    return () => clearInterval(interval); 
+  }, []);
+  
+
 
   const removeToast = (id: number) => {
     setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
   };
+
+
 
   const positionStyles = {
     "top-left": "top-5 left-5",
