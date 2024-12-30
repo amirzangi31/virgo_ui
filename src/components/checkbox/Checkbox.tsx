@@ -75,7 +75,7 @@ const checkboxStyles = cva('flex items-center gap-2 cursor-pointer', {
   },
 });
 
-export const Checkbox: React.FC<CheckboxProps> = ({
+const Checkbox: React.FC<CheckboxProps> = ({
   id,
   label,
   value,
@@ -137,3 +137,4 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     </div>
   );
 };
+export default Checkbox;

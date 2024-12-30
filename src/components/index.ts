@@ -16,5 +16,7 @@ export { SearchComponent } from "./SearchComponent"
 export {Pagination} from "./Pagination"
 export {RadioButton} from "./radioButton"
 export {Checkbox} from "./checkbox"
+export {Tabs} from "./tabs"
+
 
 
