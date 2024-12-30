@@ -263,7 +263,16 @@ const Table = <T,>({
               >
                 <div className="flex justify-center items-center flex-row gap-1">
                   {column.label}
-                  {sortLoading ? sortConfig?.key === column.key && <span className="scale-50">{sortLoader || <Loader size="sm" variant="white" />}</span> : sortConfig?.key === column.key && (sortConfig?.direction === "asc" ? upSortIcon ? upSortIcon : "🔼" : downSortIcon ? downSortIcon : " 🔽")}
+                  {sortLoading ? sortConfig?.key === column.key && <span className="scale-50">{sortLoader || <Loader size="sm" variant="white" />}</span> : sortConfig?.key === column.key && (sortConfig?.direction === "asc" ? upSortIcon ? upSortIcon :
+                    <svg width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 0L12.0622 6.75H-0.0621777L6 0Z" fill="white" />
+                    </svg>
+
+
+                    : downSortIcon ? downSortIcon : <svg width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 7L-0.0621777 0.25H12.0622L6 7Z" fill="white" />
+                    </svg>
+                  )}
                 </div>
               </th>
             ))}
