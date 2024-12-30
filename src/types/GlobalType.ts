@@ -8,6 +8,7 @@ export type PositionType = "bottom-center" | "top-center" | "center" | "bottom-m
 export type BorderStyle = "solid" | "dashed" | "none"
 export type SizeIOnputOtp = "sm" | "md" | "lg"
 export type FontWeightType = "light" | "normal" | "bold" | "fat"
+export type ShadowType =  'none' | 'sm' | 'md' | 'lg' | 'xl'
 type TableColumnUi<T> = {
       key: keyof T;
       label: string;

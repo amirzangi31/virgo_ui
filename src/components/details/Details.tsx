@@ -7,6 +7,7 @@ type variant = ColorType;
 type size = SizeType;
 type rounded = SizeType | "full";
 type svgColor = SvgColorType;
+type svgText = SvgColorType;
 
 type DetailsVariantsProps = {
   variant?: variant;
@@ -18,7 +19,8 @@ type DetailsProps = DetailsVariantsProps & {
   className?: string;
   summary: string;
   children: React.ReactNode;
-  svgColor?: svgColor; 
+  svgColor?: svgColor;
+  svgText?: svgText;
 };
 
 type DetailsVariantsFunction = (props: DetailsVariantsProps) => string;
@@ -39,6 +41,17 @@ const DetailsVariants: DetailsVariantsFunction = cva(
         white: "bg-white text-gray-600 ",
       },
       svgColor: {
+        primary: "stroke-primary",
+        secondary: "stroke-secondary",
+        warning: "stroke-warning",
+        danger: "stroke-error",
+        inverse: "stroke-gray-600",
+        success: "stroke-success",
+        purple: "stroke-purple-500",
+        default: "stroke-gray-500",
+        white: "stroke-white"
+      },
+      svg: {
         primary: "stroke-primary",
         secondary: "stroke-secondary",
         warning: "stroke-warning",
@@ -72,8 +85,8 @@ export default function Details({
   variant,
   rounded,
   minheigh,
-  svgColor ,
-  className ,
+  svgColor,
+  className,
   summary,
   children,
 }: DetailsProps): JSX.Element {
@@ -86,27 +99,25 @@ export default function Details({
       onClick={() => setIsOpen(!isOpen)}
       style={{ height: isOpen ? "auto" : undefined }}
     >
-   <summary className="font-semibold cursor-pointer flex items-center gap-2">
-  {summary}
-  <svg
-    width="20"
-    height="26"
-    viewBox="0 0 10 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    
-    className={`transition-transform duration-300 stroke-${svgColor} ${isOpen ? '' : 'rotate-90'}`}
-  >
-    <path
-      d="M8.5 15L1.5 8L8.5 1"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-</summary>
+      <summary className="font-semibold cursor-pointer flex items-center transition-all duration-300 group gap-2">
+        {summary}
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 10 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
 
-
+          className={`transition-transform duration-300 stroke-${svgColor} ${isOpen ? '' : 'rotate-90'}`}
+        >
+          <path
+            d="M8.5 15L1.5 8L8.5 1"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </summary>
       <div className="mt-2">{children}</div>
     </details>
   );

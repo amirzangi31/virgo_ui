@@ -5,7 +5,7 @@ import { cn } from "../../utils";
 
 type VariantType = ColorType;
 const TabButtonVariants = cva(
-    "tab-button text-base p-3 cursor-pointer transition-all duration-500 font-bold w-full",
+    "tab-button text-base p-3 cursor-pointer transition-all duration-300 font-bold w-full",
     {
         variants: {
             active: {
@@ -56,10 +56,7 @@ const TabButtonVariants = cva(
             { active: true, variant: "primary", className: "bg-primary/5 text-primary" },
             { active: true, variant: "secondary", className: "bg-secondary/5 text-secondary" },
             { active: true, variant: "warning", className: "bg-warning/5 text-warning" },
-            {
-                active: true, variant: "danger", className:
-                    "bg-error/5 text-error"
-            },
+            { active: true, variant: "danger", className:"bg-error/5 text-error"},
             { active: true, variant: "success", className: "bg-success/5 text-success" },
             { active: true, variant: "inverse", className: "bg-gray-600/5 text-gray-600" },
             { active: true, variant: "purple", className: "bg-purple-500/5 text-purple-500" },
@@ -76,7 +73,7 @@ const TabButtonVariants = cva(
     }
 );
 
-const TabContentVariants = cva("tab-content px-6 border-2 border-red-400 text-center transition-all duration-500 opacity-0 transform scale-100 hidden", {
+const TabContentVariants = cva("tab-content px-6 border-2 border-red-400 text-center transition-all duration-300 opacity-0 transform scale-95 hidden", {
     variants: {
         color: {
             primary: "border-primary",
