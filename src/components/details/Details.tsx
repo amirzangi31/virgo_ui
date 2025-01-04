@@ -21,6 +21,7 @@ type DetailsProps = DetailsVariantsProps & {
   children: React.ReactNode;
   svgColor?: svgColor;
   svgText?: svgText;
+  iconSvg?: React.ReactNode;
 };
 
 type DetailsVariantsFunction = (props: DetailsVariantsProps) => string;
@@ -41,17 +42,6 @@ const DetailsVariants: DetailsVariantsFunction = cva(
         white: "bg-white text-gray-600 ",
       },
       svgColor: {
-        primary: "stroke-primary",
-        secondary: "stroke-secondary",
-        warning: "stroke-warning",
-        danger: "stroke-error",
-        inverse: "stroke-gray-600",
-        success: "stroke-success",
-        purple: "stroke-purple-500",
-        default: "stroke-gray-500",
-        white: "stroke-white"
-      },
-      svg: {
         primary: "stroke-primary",
         secondary: "stroke-secondary",
         warning: "stroke-warning",
@@ -89,6 +79,7 @@ export default function Details({
   className,
   summary,
   children,
+  iconSvg,
 }: DetailsProps): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -100,6 +91,9 @@ export default function Details({
       style={{ height: isOpen ? "auto" : undefined }}
     >
       <summary className="font-semibold cursor-pointer flex items-center transition-all duration-300 group gap-2">
+        <div className="absolute top-8 -right-[0.2rem] flex -translate-x-1/2 -translate-y-1/2">
+          {iconSvg !== undefined ? iconSvg : null}
+        </div>
         {summary}
         <svg
           width="20"
@@ -107,8 +101,8 @@ export default function Details({
           viewBox="0 0 10 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-
-          className={`transition-transform duration-300 stroke-${svgColor} ${isOpen ? '' : 'rotate-90'}`}
+          className={`transition-transform duration-300 stroke-${svgColor} ${isOpen ? "" : "rotate-90"
+            }`}
         >
           <path
             d="M8.5 15L1.5 8L8.5 1"

@@ -18,6 +18,8 @@ export {RadioButton} from "./radioButton"
 export {Checkbox} from "./checkbox"
 export {Tabs} from "./tabs"
 export {Details} from "./details"
+export {DetailsDownWard} from "./detailsdownward"
+export {ChoiceButton} from "./choicebutton"
 
 
 
