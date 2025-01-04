@@ -7,45 +7,57 @@ type VariantType = ColorType;
 type textColor = ColorType;
 type Size = SizeType;
 type rounded = RoundedType;
+type shadowhover = ColorType;
 type shadow = ShadowType
 
 const CardVariants = cva(
-    'overflow-hidden text-[10px] rounded-lg transition-all duration-300 group-hover:scale-[1.3]',
+    'overflow-hidden flex flex-col transition-all duration-300 p-4',
     {
         variants: {
             variant: {
-                primary: "bg-primary  text-primary",
-                secondary: "bg-secondary  text-secondary",
-                warning: "bg-warning  text-warning",
-                danger: "bg-error  text-error",
-                success: "bg-success  text-success",
-                inverse: "bg-gray-600 text-gray-600",
-                purple: "bg-purple-500 text-purple-500",
-                default: "bg-gray-500  text-gray-500",
-                white: "bg-white text-primary  ",
+                primary: "bg-primary",
+                secondary: "bg-secondary",
+                warning: "bg-warning",
+                danger: "bg-error",
+                success: "bg-success",
+                inverse: "bg-gray-600",
+                purple: "bg-purple-500",
+                default: "bg-gray-500",
+                white: "bg-white",
             },
             textcolor: {
-                primary: "text-primary",
-                secondary: "text-secondary",
-                warning: "text-warning",
-                danger: "text-error",
-                success: "text-success",
-                inverse: "text-gray-600",
-                purple: "text-purple-500",
-                default: "text-gray-500",
-                white: "text-white",
+                primary: "text-white",
+                secondary: "text-white",
+                warning: "text-white",
+                danger: "text-white",
+                success: "text-white",
+                inverse: "text-white",
+                purple: "text-white",
+                default: "text-white",
+                white: "text-gray-500",
+            },
+            shadowhover: {
+                primary: "hover:border-primary hover:shadow-hover",
+                secondary: "hover:border-secondary hover:shadow-hover",
+                warning: "hover:border-warning hover:shadow-hover",
+                danger: "hover:border-error hover:shadow-hover",
+                success: "hover:border-success hover:shadow-hover",
+                inverse: "hover:border-gray-600 hover:shadow-hover",
+                purple: "hover:border-purple-500 hover:shadow-hover",
+                default: "hover:border-gray-500 hover:shadow-hover",
+                white: "hover:border-gray-500 hover:shadow-hover",
             },
             size: {
-                sm: 'w-[6rem] h-[5rem]',
-                md: 'w-[14.25rem] h-[9.1875rem]',
-                lg: 'w-[18rem] h-[12rem]'
+                sm: 'text-sm',
+                md: 'text-md',
+                lg: 'text-lg'
             },
             shadow: {
                 none: 'shadow-none',
-                sm: 'shadow-sm',
-                md: 'shadow-md',
-                lg: 'shadow-lg',
-                xl: 'shadow-xl',
+                sm: 'shadow-sm ',
+                md: 'shadow-md ',
+                lg: 'shadow-lg ',
+                xl: 'shadow-xl ',
             },
             rounded: {
                 full: "rounded-full",
@@ -57,64 +69,43 @@ const CardVariants = cva(
         defaultVariants: {
             size: 'md',
             shadow: 'md',
-            rounded: 'lg',
+            rounded: 'sm',
         },
     }
 );
-const ImgVariants = cva(
-    'border-2 border-red-400 w-full h-full ',
-    {
-        variants: {
-            rounded: {
-                full: "rounded-full",
-                md: "rounded-md",
-                sm: "rounded-sm",
-                lg: "rounded-lg"
-            },
-        },
-        defaultVariants: {
-            rounded: 'lg',
-        },
-    }
-);
-
-
 
 type CardProps = {
-    imageSrc: string;
-    altText: string;
     size?: Size;
+    shadowhover?: shadowhover;
     shadow?: shadow;
     rounded?: rounded;
     variant?: VariantType;
     textcolor?: textColor;
-    content: string;
+    children?: React.ReactNode;
+    iconSvg?: React.ReactNode; 
 };
 
 const Card: React.FC<CardProps> = ({
-    imageSrc,
-    altText,
     size,
-    shadow,
+    shadowhover,
     rounded,
     variant,
     textcolor,
-    content
+    shadow,
+    children,
+    iconSvg
 }) => {
     return (
-        <div className={cn(CardVariants({ size, shadow, rounded, variant, textcolor }), "flex flex-col gap-3 justify-center items-center group")}>
-            <div className=' px-3 py-3 text-center'>
-                <img
-                className={cn(ImgVariants({ rounded}), "w-full h-full object-cover group-hover:scale-[1.2]")}
-                    alt={altText}
-                    loading="lazy"
-                    width={100}
-                    height={100}
-                  src={imageSrc} />
-           <p>{content}</p>
-            </div>
-          
+        <div className={cn(CardVariants({ size, shadowhover, shadow, rounded, variant, textcolor }), "relative flex group")}>
+        <div className="absolute top-8 -right-[0.2rem] flex -translate-x-1/2 -translate-y-1/2">
+          {iconSvg !== undefined ? iconSvg : null}
         </div>
+        <div className="flex justify-start">
+          {children}
+        </div>
+      </div>
+      
+      
     );
 };
 
