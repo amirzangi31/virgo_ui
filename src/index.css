@@ -134,3 +134,42 @@ input {
   }
 }
 /*----------------------------Animation Modal-----------------------------*/
+
+/*----------------------------Date picker Classname-----------------------------*/
+.custom-calendar.rmdp-wrapper,
+.rmdp-container {
+  @apply bg-white rounded-lg;
+}
+.rmdp-ep-arrow:after {
+  @apply bg-white !important;
+}
+.rmdp-day.rmdp-selected span:not(.highlight) {
+  @apply bg-primary !important;
+}
+.rmdp-day.rmdp-today span {
+  @apply bg-primary/50 !important;
+}
+.rmdp-week-day {
+  @apply text-primary !important;
+}
+.rmdp-arrow-container {
+  @apply bg-primary text-white flex justify-center items-center !important;
+}
+.rmdp-arrow-container i {
+  @apply border-white !important;
+}
+.rmdp-day:not(.rmdp-disabled, .rmdp-day-hidden) span:hover {
+  @apply bg-primary/70 !important;
+}
+.rmdp-container .ep-arrow.custom-arrow::after {
+  @apply bg-primary;
+}
+.rmdp-container .custom-calendar.ep-arrow[direction="bottom"] {
+  @apply border border-primary;
+}
+
+.rmdp-container .custom-calendar.ep-arrow[direction="top"] {
+  @apply border border-primary;
+}
+
+/*----------------------------Date picker Classname-----------------------------*/

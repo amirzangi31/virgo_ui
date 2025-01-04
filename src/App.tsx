@@ -27,16 +27,24 @@ const App = () => {
       ];
       const [radioButton, setRadioButton] = useState<string | number>("isCenter")
 
-      const columns: TableColumnUi<{ id: number; name: string; age: number; role: string }>[] = [
+      const columns: TableColumnUi<{ id: number; title: string; body: number; }>[] = [
             { key: "id", label: "ID", sortable: true, width: "10%" },
-            { key: "name", label: "Name", sortable: true, filterable: true, width: "30%" },
-            { key: "age", label: "Age", sortable: true, width: "20%" },
-            { key: "role", label: "Role", width: "40%" },
+            { key: "title", label: "Title", sortable: true, filterable: true, width: "30%" },
+            { key: "body", label: "Description", sortable: true, width: "60%" },
       ];
 
       const handleRowSelect = (selectedRows: number[]) => {
             console.log("Selected Rows:", selectedRows);
       };
+      const [loading , setLoading ] = useState([])
+      const fetchData = async() => {
+            const res = await fetch("https://jsonplaceholder.typicode.com/posts")
+            const result = await res.json()
+            
+            return result
+      }
+
+
 
       const {
             register,
@@ -111,9 +119,7 @@ const App = () => {
                                     textColor='primary'
                                     size="lg"
                                     asyncSortableFun={async (sort, key) => {
-                                          const res = await fetch("https://jsonplaceholder.typicode.com/posts")
-                                          const result = await res.json()
-                                          return result
+                                      
                                     }}
                                     border="solid"
                                     enableRowSelect={true}
