@@ -4,7 +4,7 @@ import cn from '../../utils/cnFun';
 import { ColorType, RoundedType, SvgColorType } from '../../types/GlobalType';
 
 type Variant = ColorType;
-type rounded = RoundedType;
+type rounded = RoundedType | "custom";
 type CheckboxProps = {
   id: string;
   label: string;
@@ -19,7 +19,7 @@ type CheckboxProps = {
   rounded?: rounded,
 };
 
-const checkboxStyles = cva('flex items-center gap-2 cursor-pointer', {
+const checkboxStyles = cva('flex items-center gap-2 cursor-pointer ', {
   variants: {
     size: {
       sm: 'text-sm',
@@ -34,18 +34,18 @@ const checkboxStyles = cva('flex items-center gap-2 cursor-pointer', {
       inverse: 'border-gray-600',
       success: 'border-success',
       purple: 'border-purple-500 ',
-      default: 'border-gray-500 ',
+      default: 'border-gray-500  ',
       white: 'border-gray-300',
     },
     background: {
-      primary: 'bg-primary border-primary',
-      secondary: 'bg-secondary border-secondary ',
-      warning: 'bg-warning border-warning',
-      danger: 'bg-error border-error',
-      inverse: 'bg-gray-600 border-gray-600',
-      success: 'bg-success border-success',
-      purple: 'bg-purple-500 border-purple-500',
-      default: 'bg-gray-300 border-gray-300',
+      primary: 'bg-primary ',
+      secondary: 'bg-white ',
+      warning: 'bg-warning ',
+      danger: 'bg-error ',
+      inverse: 'bg-gray-600 ',
+      success: 'bg-success ',
+      purple: 'bg-purple-500 ',
+      default: 'bg-gray-300 ',
       white: 'bg-white ',
     },
     svgColor: {
@@ -68,8 +68,6 @@ const checkboxStyles = cva('flex items-center gap-2 cursor-pointer', {
     }
   },
   defaultVariants: {
-    rounded: "custom",
-    size: 'md',
     color: "default"
 
   },
@@ -98,8 +96,12 @@ const Checkbox: React.FC<CheckboxProps> = ({
     <div>
       <div
         className={cn(
-          'flex justify-center items-center w-5 h-5 border ',
-          checkboxStyles({ color, rounded, background: checked ? background : color })
+          'flex justify-center items-center w-5 h-5 border-[0.104rem]  ',
+          checkboxStyles({
+            color: color ? background : color,
+            rounded,
+            background: checked ? background : undefined,
+          })
         )}
         onClick={handleChange}
       >
