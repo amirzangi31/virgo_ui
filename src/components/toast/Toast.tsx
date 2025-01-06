@@ -1,46 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, ReactNode, useCallback, useMemo } from "react";
+// import ReactDOM from "react-dom";
 import { cva } from "class-variance-authority";
 import cn from "../../utils/cnFun";
-import { ColorType, RoundedType } from "../../types/GlobalType";
+import { subscribe, toast } from './toastManager';
 
-type ToastVariantsProps = {
-  variant?: ColorType;
-  rounded?: RoundedType;
-  autoClose?: number;
-  position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
-  className?: string;
-};
-
-type ToastProps = ToastVariantsProps & {
-  id: number;
-  title: string;
-  message: string;
-  iconmessage?: JSX.Element;
-  iconclose?: JSX.Element;
-  maxWidth?: "sm" | "md" | "lg";
-  onClose: (id: number) => void;
-  expireAt?: number;
-};
-
+type VariantType = "success" | "error" | "warning" | "info"
+type PositionType = "top-left" | "top-right" | "bottom-left" | "bottom-right" | "bottom-center" | "top-center"
+// استایل‌های Toast
 const toastStyles = cva(
-  "animate-opacity shadow-shadow_toast w-full flex items-center h-[3.75rem] justify-between px-4 text-md pointer-events-auto z-[100] transition-all duration-300",
+  "shadow-lg modal_animation flex items-center justify-between gap-2 p-4 text-sm pointer-events-auto z-[1000] transition-all duration-300 w-[20rem] h-[3.75rem] overflow-y-auto  ",
   {
     variants: {
       variant: {
-        primary: "bg-primary text-white",
-        secondary: "bg-secondary text-white",
-        warning: "bg-warning text-white",
-        danger: "bg-error text-white",
-        success: "bg-success text-white",
-        inverse: "bg-gray-600 text-white",
-        purple: "bg-purple-500 text-white",
-        default: "bg-gray-500 text-white",
-        white: "bg-white text-primary",
-      },
-      maxWidth: {
-        sm: "max-w-[25rem]",
-        md: "max-w-[45rem]",
-        lg: "max-w-[65rem]",
+        success: "bg-primary text-white",
+        error: "bg-red-500 text-white",
+        warning: "bg-yellow-500 text-white",
+        info: "bg-blue-500 text-white",
       },
       rounded: {
         sm: "rounded-sm",
@@ -48,111 +23,185 @@ const toastStyles = cva(
         lg: "rounded-lg",
         full: "rounded-full",
       },
+
     },
     defaultVariants: {
-      variant: "danger",
-      maxWidth: "lg",
+      variant: "info",
       rounded: "md",
     },
   }
 );
 
+type ToastType = {
+  id: string;
+  message: string;
+  variant: VariantType
+  onClose: (id: string) => void;
+  expireTime: number;
+  iconMessage?: ReactNode
+}
 
-const defaultCloseIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={2}
-    stroke="currentColor"
-    className="w-5 h-5 text-white cursor-pointer hover:text-gray-300"
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-  </svg>
-);
 
-const Toast: React.FC<ToastProps> = ({
-  id,
-  message,
-  iconmessage,
-  iconclose = defaultCloseIcon, 
-  onClose,
-  variant,
-  rounded,
-  autoClose,
-  maxWidth,
-}) => {
+// Toast Component
+const Toast = ({ id, message, variant, onClose, expireTime = 5000, iconMessage }: ToastType) => {
   useEffect(() => {
-    if (autoClose) {
-      const timer = setTimeout(() => onClose(id), autoClose);
-      return () => clearTimeout(timer);
-    }
-  }, [id, autoClose, onClose]);
+    const timer = setTimeout(() => onClose(id), expireTime); // خودکار بسته شدن
+    return () => clearTimeout(timer);
+  }, [id, onClose]);
 
   return (
-    <div className={cn(toastStyles({ variant, rounded, maxWidth }))}>
-      <div className="flex justify-between w-full items-center">
-        <div className="flex items-center gap-2 p-2">
-          {iconmessage && <div className="mr-2">{iconmessage}</div>}
-          {message}
-        </div>
-        {iconclose && (
-          <div onClick={() => onClose(id)} className="top-5 left-5">
-            {iconclose}
-          </div>
-        )}
-      </div>
+    <div className={cn(toastStyles({ variant }))}>
+      {iconMessage && <div className="w-fit">{iconMessage}</div>}
+      <span className="flex-1">{message}</span>
+      <button onClick={() => onClose(id)}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={2}
+          stroke="currentColor"
+          className="w-5 h-5 text-white cursor-pointer hover:text-gray-300"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
     </div>
   );
 };
 
-type ToastManagerProps = {
-  initialToasts: Array<Omit<ToastProps, "id" | "onClose" | "expireAt">>;
-};
 
-const ToastManager: React.FC<ToastManagerProps> = ({ initialToasts }) => {
-  const [toasts, setToasts] = useState<Array<ToastProps>>([]);
-  const position = initialToasts[0]?.position || "top-right";
 
-  useEffect(() => {
-    const mappedToasts = initialToasts.map((toast, index) => ({
-      ...toast,
-      id: Date.now() + index,
-      expireAt: Date.now() + (toast.autoClose || 1000),
-      onClose: removeToast,
-    }));
-    setToasts((prevToasts) => [...prevToasts, ...mappedToasts]);
-  }, [initialToasts]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = Date.now();
-      setToasts((prevToasts) =>
-        prevToasts.filter((toast) => toast.expireAt! > now)
-      );
-    }, 500);
+export const ToastProvider: React.FC<{
+  children?: React.ReactNode;
+  position?: PositionType
+  expireTime?: number
+  iconMessage?: ReactNode
+}> = ({ position = "top-right", expireTime = 5000 }) => {
+  const [toasts, setToasts] = useState<{
+    id: string,
+    message: string,
+    variant: VariantType,
+    expireTime: number,
+    position?: PositionType,
+    iconMessage?: ReactNode
+  }[] | []>([]);
 
-    return () => clearInterval(interval);
+
+  const removeToast = useCallback((id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
-
-  const removeToast = (id: number) => {
-    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
-  };
-
-  const positionStyles = {
-    "top-left": "top-5 left-5",
-    "top-right": "top-5 right-5",
-    "bottom-left": "bottom-5 left-5",
-    "bottom-right": "bottom-5 right-5",
-  };
+  useEffect(() => {
+    const unsubscribe = subscribe((newToasts) => {
+      setToasts(newToasts);
+    });
+    return unsubscribe;
+  }, []);
+  const filteredToasts = useMemo(() => ({
+    topLeft: toasts.filter((toast) => toast.position ? toast.position === "top-left" : position === "top-left"),
+    topRight: toasts.filter((toast) => toast.position ? toast.position === "top-right" : position === "top-right"),
+    topCenter: toasts.filter((toast) => toast.position ? toast.position === "top-center" : position === "top-center"),
+    bottomLeft: toasts.filter((toast) => toast.position ? toast.position === "bottom-left" : position === "bottom-left"),
+    bottomRight: toasts.filter((toast) => toast.position ? toast.position === "bottom-right" : position === "bottom-right"),
+    bottomCenter: toasts.filter((toast) => toast.position ? toast.position === "bottom-center" : position === "bottom-center"),
+  }), [toasts, position]);
 
   return (
-    <div className={`fixed ${positionStyles[position]} space-y-4`}>
-      {toasts.map((toast) => (
-        <Toast key={toast.id} {...toast} />
-      ))}
+    <div className="fixed z-[1000] size-full top-0 left-0 p-4 pointer-events-none	space-y-2 overflow-y-auto h-screen ">
+      {filteredToasts.topLeft.length ? (
+        <div className="absolute top-0 left-0 space-y-2 p-4">
+          {filteredToasts.topLeft.map((toast) => (
+            <Toast key={toast.id} {...toast} onClose={removeToast} expireTime={expireTime} />
+          ))}
+        </div>
+      ) : null}
+      {filteredToasts.topRight.length ? (
+        <div className="absolute top-0 right-0 space-y-2 p-4">
+          {filteredToasts.topRight.map((toast) => (
+            <Toast key={toast.id} {...toast} onClose={removeToast} expireTime={expireTime} />
+          ))}
+        </div>
+      ) : null}
+      {filteredToasts.topCenter.length ? (
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 space-y-2 p-4">
+          {filteredToasts.topCenter.map((toast) => (
+            <Toast key={toast.id} {...toast} onClose={removeToast} expireTime={expireTime} />
+          ))}
+        </div>
+      ) : null}
+      {filteredToasts.bottomCenter.length ? (
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 space-y-2 p-4">
+          {filteredToasts.bottomCenter.map((toast) => (
+            <Toast key={toast.id} {...toast} onClose={removeToast} expireTime={expireTime} />
+          ))}
+        </div>
+      ) : null}
+      {filteredToasts.bottomLeft.length ? (
+        <div className="absolute bottom-0 left-0 space-y-2 p-4">
+          {filteredToasts.bottomLeft.map((toast) => (
+            <Toast key={toast.id} {...toast} onClose={removeToast} expireTime={expireTime} />
+          ))}
+        </div>
+      ) : null}
+      {filteredToasts.bottomRight.length ? (
+        <div className="absolute bottom-0 right-0 space-y-2 p-4">
+          {filteredToasts.bottomRight.map((toast) => (
+            <Toast key={toast.id} {...toast} onClose={removeToast} expireTime={expireTime} />
+          ))}
+        </div>
+      ) : null}
+
+      {/* {toasts.filter((toast) => toast.position ? toast.position === "top-right" : position === "top-right").length ? (
+
+        <div className="absolute top-0 right-0 space-y-2 p-4">
+          {toasts
+            .filter((toast) => toast.position ? toast.position === "top-right" : position === "top-right")
+            .map((toast) => (
+              <Toast key={toast.id} {...toast} onClose={removeToast} expireTime={expireTime} />
+            ))}
+        </div>
+      ) : null}
+      {toasts.filter((toast) => toast.position ? toast.position === "top-center" : position === "top-center").length ? (
+
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 space-y-2 p-4">
+          {toasts
+            .filter((toast) => toast.position ? toast.position === "top-center" : position === "top-center")
+            .map((toast) => (
+              <Toast key={toast.id} {...toast} onClose={removeToast} expireTime={expireTime} />
+            ))}
+        </div>
+      ) : null}
+      {toasts.filter((toast) => toast.position ? toast.position === "bottom-left" : position === "bottom-left").length ? (
+
+        <div className="absolute bottom-0 left-0 space-y-2 p-4">
+          {toasts
+            .filter((toast) => toast.position ? toast.position === "bottom-left" : position === "bottom-left")
+            .map((toast) => (
+              <Toast key={toast.id} {...toast} onClose={removeToast} expireTime={expireTime} />
+            ))}
+        </div>
+      ) : null}
+      {toasts.filter((toast) => toast.position ? toast.position === "bottom-right" : position === "bottom-right").length ? (
+
+        <div className="absolute bottom-0 right-0 space-y-2 p-4">
+          {toasts
+            .filter((toast) => toast.position ? toast.position === "bottom-right" : position === "bottom-right")
+            .map((toast) => (
+              <Toast key={toast.id} {...toast} onClose={removeToast} expireTime={expireTime} />
+            ))}
+        </div>
+      ) : null}
+      {toasts.filter((toast) => toast.position ? toast.position === "bottom-center" : position === "bottom-center").length ? (
+
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 space-y-2 p-4">
+          {toasts
+            .filter((toast) => toast.position ? toast.position === "bottom-center" : position === "bottom-center")
+            .map((toast) => (
+              <Toast key={toast.id} {...toast} onClose={removeToast} expireTime={expireTime} />
+            ))}
+        </div>
+      ) : null} */}
     </div>
   );
 };
 
-export default ToastManager;

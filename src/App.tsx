@@ -7,10 +7,9 @@ import SidebarDropdown from './components/sidebar/SidebarDropdown'
 import { HeaderMobile } from './components/headermobile'
 import { TableColumnUi } from './types/GlobalType'
 import { useForm, SubmitHandler } from 'react-hook-form';
-import SearchComponent from './components/SearchComponent/SearchComponent';
-import { cn } from './utils'
-import { DropdownItem } from './components/dropdown/Dropdown'
 import { RadioButton } from './components/radioButton'
+import { toast } from './components/toast/toastManager'
+
 
 type FormValues = {
       username: string;
@@ -36,11 +35,11 @@ const App = () => {
       const handleRowSelect = (selectedRows: number[]) => {
             console.log("Selected Rows:", selectedRows);
       };
-      const [loading , setLoading ] = useState([])
-      const fetchData = async() => {
+      const [loading, setLoading] = useState([])
+      const fetchData = async () => {
             const res = await fetch("https://jsonplaceholder.typicode.com/posts")
             const result = await res.json()
-            
+
             return result
       }
 
@@ -119,7 +118,7 @@ const App = () => {
                                     textColor='primary'
                                     size="lg"
                                     asyncSortableFun={async (sort, key) => {
-                                      
+
                                     }}
                                     border="solid"
                                     enableRowSelect={true}
@@ -139,9 +138,9 @@ const App = () => {
                                           variant={'primary'} />}
                                     onRowSelect={handleRowSelect}
                                     rowCount={{
-                                          count : 10,
-                                          handler : (count) => {console.log(count)},
-                                          cotent :[{value : 10 , name : '10'},{value : 20 , name : '20'},{value : 30 , name : '30'},{value : 40 , name : '40'},{value : 50 , name : '50'}]
+                                          count: 10,
+                                          handler: (count) => { console.log(count) },
+                                          cotent: [{ value: 10, name: '10' }, { value: 20, name: '20' }, { value: 30, name: '30' }, { value: 40, name: '40' }, { value: 50, name: '50' }]
                                     }}
                               />
                               <div>
@@ -168,8 +167,46 @@ const App = () => {
                                           background="default"
                                     />
                               </div>
-                        </div>
+                              <Button variant='primary' onClick={() => {
+                                    //  const [toasts, setToasts] = useState<ToastManagerType[]>([]);
 
+
+                                    //  const addToast = (toast: Omit<ToastManagerType, "id" | "onClose">) => {
+                                    //        setToasts((prevToasts) => [
+                                    //              ...prevToasts,
+                                    //              {
+                                    //                    ...toast,
+                                    //                    id: Date.now(),
+                                    //                    onClose: (id) =>
+                                    //                          setToasts((prevToasts) =>
+                                    //                                prevToasts.filter((toast) => toast.id !== id)
+                                    //                          ),
+                                    //              },
+                                    //        ]);
+                                    //  };
+                                    // addToast({
+                                    //       title: "خطا",
+                                    //       message:
+                                    //             (error instanceof Error ? error.message : "مشکلی در دریافت اطلاعات رخ داد!") ||
+                                    //             "مشکلی در دریافت اطلاعات رخ داد!",
+                                    //       variant: "danger",
+                                    //       rounded: "md",
+                                    //       autoClose: 5000,
+                                    //       position: "bottom-right",
+                                    // });
+
+
+                              }}>
+                                    test
+                              </Button>
+                        </div>
+                        <button type='button' className='border border-error p-4' onClick={() => {
+                              toast("test", 'warning')
+                              toast("test", 'error' , "top-right")
+                              toast("test", 'success')
+                        }}>
+                              show toast
+                        </button>
                   </main>
             </div>
       )

@@ -1,7 +1,7 @@
 {
   "name": "virgo_ui",
   "private": false,
-  "version": "0.6.3",
+  "version": "0.7.5",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -19,20 +19,24 @@
     "preview": "vite preview",
     "build": "tsup src/index.ts --dts --format esm,cjs --minify"
   },
+  "peerDependencies": {
+  "react": ">=18.0.0",
+  "react-dom": ">=18.0.0"
+},
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "postcss": "^8.4.49",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",
     "tailwind-merge": "^2.5.5",
     "tailwindcss": "^3.4.16",
     "yup": "^1.6.1"
   },
   "devDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "@eslint/js": "^9.15.0",
     "@types/node": "^22.10.2",
     "@types/react": "^18.3.12",
