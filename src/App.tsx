@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from './components/header/Header'
 import { BackButton, Button, Dropdown, Loader, Modal, Pagination, SectionTitle, Sidebar, Table, TextField } from './components'
 import SidebarHeader from './components/sidebar/SidebarHeader'
@@ -9,6 +9,7 @@ import { TableColumnUi } from './types/GlobalType'
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { RadioButton } from './components/radioButton'
 import { toast } from './components/toast/toastManager'
+import Tooltip from './components/tooltip/Tooltip'
 
 
 type FormValues = {
@@ -18,31 +19,30 @@ type FormValues = {
 const App = () => {
       const [isOpen, setIsOpen] = useState(true)
       const [sideBarIndex, setSideBarIndex] = useState<null | number>(null)
-      const data = [
-            { id: 1, name: "John Doe", age: 28, role: "Developer" },
-            { id: 2, name: "Jane Smith", age: 34, role: "Designer" },
-            { id: 3, name: "Sam Johnson", age: 25, role: "Manager" },
-            { id: 4, name: "Alice Brown", age: 30, role: "Tester" },
-      ];
+      const [data, setData] = useState([])
       const [radioButton, setRadioButton] = useState<string | number>("isCenter")
 
-      const columns: TableColumnUi<{ id: number; title: string; body: number; }>[] = [
+      const columns: TableColumnUi<{ id: number; title: string; body: string; }>[] = [
             { key: "id", label: "ID", sortable: true, width: "10%" },
             { key: "title", label: "Title", sortable: true, filterable: true, width: "30%" },
             { key: "body", label: "Description", sortable: true, width: "60%" },
       ];
 
       const handleRowSelect = (selectedRows: number[]) => {
-            console.log("Selected Rows:", selectedRows);
+            // console.log("Selected Rows:", selectedRows);
       };
-      const [loading, setLoading] = useState([])
+      const [loading, setLoading] = useState(false)
       const fetchData = async () => {
+            setLoading(true)
             const res = await fetch("https://jsonplaceholder.typicode.com/posts")
             const result = await res.json()
-
+            setData(result)
+            setLoading(false)
             return result
       }
-
+      useEffect(() => {
+            fetchData()
+      }, [])
 
 
       const {
@@ -105,14 +105,19 @@ const App = () => {
                                     </SidebarDropdown>
                               </div>
                         </Sidebar>
-                        <div className='shadow-shadow_category rounded-xl bg-white w-full p-4'>
+                        <div className='shadow-shadow_category rounded-xl bg-white w-full p-4 h-[calc(100vh-120px)] overflow-y-auto'>
                               <SectionTitle >
                                     est
                               </SectionTitle>
                               <Table
                                     className='mt-8'
                                     refetch={() => { console.log('refetch') }}
-                                    data={[]}
+                                    data={data.map((data: { id: number, title: string, body: string }, index) => {
+                                          return {
+                                                id: data.id, title: data.title, body: data.body
+                                          }
+                                    }) || []}
+
                                     columns={columns}
                                     variant="primary"
                                     textColor='primary'
@@ -122,16 +127,16 @@ const App = () => {
                                     }}
                                     border="solid"
                                     enableRowSelect={true}
-                                    loading={false}
+                                    loading={loading}
                                     pagination={<Pagination
                                           pageCount={pageCount} // تعداد کل صفحات
                                           currentPage={currentPage} // صفحه فعلی
                                           onPageChange={handlePageChange}
                                           activeVariant='primary'
                                           className="justify-center" // کلاس سفارشی
-                                          nextLabel={<BackButton />}
+                                          nextLabel={<BackButton svgColor='primary' />}
                                           size='sm'
-                                          previousLabel={<BackButton />}
+                                          previousLabel={<BackButton svgColor='primary' />}
                                           breakLabel={<span className="text-gray-400">...</span>} // جداکننده صفحات
                                           activeClassName="bg-green-500 text-white" // استایل برای صفحه فعال
                                           renderOnZeroPageCount={() => <p>No pages available</p>} // رفتار برای زمانی که صفحه‌ای وجود ندارد
@@ -166,6 +171,10 @@ const App = () => {
                                           size="md"
                                           background="default"
                                     />
+
+                                    {/* <Tooltip content="lorem cafdaadsf asdf asdf" position='top-center' variant='danger'>
+                                          <p className='mx-auto  border border-error rounded-lg w-fit'>×</p>
+                                    </Tooltip> */}
                               </div>
                               <Button variant='primary' onClick={() => {
                                     //  const [toasts, setToasts] = useState<ToastManagerType[]>([]);
@@ -202,7 +211,7 @@ const App = () => {
                         </div>
                         <button type='button' className='border border-error p-4' onClick={() => {
                               toast("test", 'warning')
-                              toast("test", 'error' , "top-right")
+                              toast("test", 'error', "top-right")
                               toast("test", 'success')
                         }}>
                               show toast

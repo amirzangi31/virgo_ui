@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { cva } from "class-variance-authority";
 import cn from "../../utils/cnFun";
+import { ColorType } from "../../types/GlobalType";
 
 const dropdownVariants = cva("relative inline-block peer-checked:dropdown-open", {
   variants: {
@@ -63,6 +64,8 @@ const dropdownItemVariants = cva(
         inverse: "hover:bg-gray-600 hover:text-white",
         success: "hover:bg-success hover:text-white",
         default: "hover:bg-gray-500 hover:text-white",
+        purple: "hover:bg-purple-500 hover:text-white",
+        white: 'hover:bg-white hover:text-primary',
       },
     },
     defaultVariants: {
@@ -135,7 +138,7 @@ type DropdownProps = {
   contentClassName?: string;
   content: { name: string | number | boolean, value: string | number }[],
   itemHandler?: (item: any) => void
-  colorItem?: "primary" | "secondary" | "default" | "danger" | "inverse" | "success" | "default";
+  colorItem?: ColorType
 };
 
 export default function Dropdown({

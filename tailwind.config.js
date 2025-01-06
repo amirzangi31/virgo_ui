@@ -6,6 +6,10 @@ export default {
   ],
   theme: {
     extend: {
+      transitionProperty: {
+        'top': 'top',
+        'bottom': 'bottom',
+      },
       screens: {
         xsOne: "480px",
         xsTwo: "450px",

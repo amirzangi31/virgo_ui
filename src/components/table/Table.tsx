@@ -1,9 +1,10 @@
 import React, { ReactNode, useState } from "react";
 import { cva } from "class-variance-authority";
 import cn from "../../utils/cnFun";
-import { BorderStyle, ColorType, SizeType } from "../../types/GlobalType";
+import { BorderStyle, ColorType, SizeType } from '../../types/GlobalType';
 import { Loader } from "../Loader";
 import { Dropdown } from "../dropdown";
+import { Checkbox } from "../checkbox";
 
 
 type Variant = ColorType
@@ -16,6 +17,7 @@ type TableVariantsProps = {
   variant?: Variant;
   size?: Size;
   border?: BorderStyle;
+
   textColor?: textColor
 };
 
@@ -48,8 +50,8 @@ type TableProps<T> = TableVariantsProps & {
   emptyClassname?: string;
   footer?: boolean;
   asyncSortableFun?: (direction: "asc" | "desc", key: keyof T) => Promise<void>;
-  upSortIcon?: ReactNode;
-  downSortIcon?: ReactNode;
+
+  sortIcon?: ReactNode
   sortLoader?: ReactNode,
   refetch?: () => void
   refetchLoading?: boolean
@@ -64,7 +66,7 @@ type TableProps<T> = TableVariantsProps & {
  * Class Variants
  */
 const TableVariants = cva(
-  "relative table-auto transition-all duration-300 text-center  rounded-full w-full  overflow-hidden overflow-x-auto border border-primary realtive",
+  "relative table-auto transition-all duration-300 text-center  rounded-full w-full  overflow-hidden overflow-x-auto   realtive border",
   {
     variants: {
 
@@ -85,6 +87,17 @@ const TableVariants = cva(
         dotted: "border-dotted",
         none: "border-none",
       },
+      borderColor: {
+        primary: "border-primary/20",
+        secondary: "border-secondary/20",
+        warning: "border-warning/20",
+        danger: "border-error/20",
+        success: "border-success/20",
+        inverse: "border-inverse-600/20",
+        purple: "border-purple-500/20",
+        default: "border-gray-500/20",
+        white: "border-white/20",
+      },
       minWidth: {
         sm: "w-1/2",
         md: "w-2/3",
@@ -96,7 +109,8 @@ const TableVariants = cva(
       rounded: "lg",
       minWidth: "full",
       size: "lg",
-      border: "solid"
+      border: "solid",
+      borderColor: "primary"
     },
   }
 );
@@ -145,6 +159,38 @@ const TableTextColorVariants = cva(
     }
   }
 )
+const TdColorVariants = cva(
+  "",
+  {
+    variants: {
+      variant: {
+        primary: "bg-primary/50 !text-white ",
+        secondary: "bg-secondary/50 !text-white ",
+        warning: "bg-warning/50 !text-white ",
+        danger: "bg-error/50 !text-white ",
+        success: "bg-success/50 !text-white ",
+        inverse: "bg-inverse-600/50 !text-white ",
+        purple: "bg-purple-500/50 !text-white ",
+        default: "bg-gray-500/50 !text-white ",
+        white: "bg-white/10 ",
+      },
+      hoverVariant: {
+        primary: " border-primary/20 hover:bg-primary/10 hover:!text-primary",
+        secondary: " border-secondary/20 hover:bg-secondary/10 hover:!text-secondary",
+        warning: " border-warning/20 hover:bg-warning/10 hover:!text-warning",
+        danger: " border-error/20 hover:bg-error/10 hover:!text-error",
+        success: " border-success/20 hover:bg-success/10 hover:!text-success",
+        inverse: " border-inverse-600/20 hover:bg-inverse-600/10 hover:!text-inverse-600",
+        purple: " border-purple-500/20 hover:bg-purple-500/10 hover:!text-purple-500",
+        default: " border-gray-500/20 hover:bg-gray-500/10 hover:!text-gray-500",
+        white: " border-white/20 hover:bg-white/10 ",
+      }
+    },
+    defaultVariants: {
+
+    }
+  }
+)
 
 
 
@@ -168,8 +214,7 @@ const Table = <T,>({
   textColor,
   emptyClassname,
   emptyText,
-  upSortIcon,
-  downSortIcon,
+  sortIcon,
   sortLoader,
   refetch,
   refetchLoading,
@@ -181,13 +226,19 @@ const Table = <T,>({
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: keyof T; direction: "asc" | "desc" } | null>(null);
   const [sortLoading, setSortLoading] = useState(false)
-  const toggleRowSelect = (rowIndex: number) => {
-    const updatedSelectedRows = selectedRows.includes(rowIndex)
-      ? selectedRows.filter((index) => index !== rowIndex)
-      : [...selectedRows, rowIndex];
-    setSelectedRows(updatedSelectedRows);
-    if (onRowSelect) onRowSelect(updatedSelectedRows);
-  };
+
+
+  const toggleRowSelect = React.useCallback(
+    (rowIndex: number) => {
+      const updatedSelectedRows = selectedRows.includes(rowIndex)
+        ? selectedRows.filter((index) => index !== rowIndex)
+        : [...selectedRows, rowIndex];
+      setSelectedRows(updatedSelectedRows);
+      if (onRowSelect) onRowSelect(updatedSelectedRows);
+    },
+    [selectedRows, onRowSelect]
+  );
+
   const handleSort = async (key: keyof T) => {
     if (asyncSortableFun) {
       setSortLoading(true);
@@ -225,17 +276,20 @@ const Table = <T,>({
     return sortedData.slice(startIndex, startIndex + rowsPerPage);
   }, [sortedData, currentPage, rowsPerPage, pagination]);
 
-  const totalPages = Math.ceil(data.length / rowsPerPage);
 
+  const allRowsSelected = React.useMemo(
+    () => selectedRows.length === paginatedData.length,
+    [selectedRows, paginatedData]
+  );
   return (
     <div className={cn(
-      "",
       TableVariants({
         size,
         border,
+        borderColor: variant,
         minWidth
       }),
-      className
+      className,
     )}>
 
       <table
@@ -244,11 +298,29 @@ const Table = <T,>({
         <thead>
           <tr className="rounded-xl">
             {enableRowSelect && <th className={cn(
-              "min-w-[4rem] ",
+              "min-w-[4rem] cursor-pointer",
               TableColorVariants({
                 variant
               })
-            )}></th>}
+            )}
+              onClick={() => {
+                if (selectedRows.length === paginatedData.length) {
+                  setSelectedRows([])
+                  return
+                }
+                const allRows = paginatedData.map((row, indexRow) => indexRow)
+                setSelectedRows(allRows)
+              }}
+
+            >
+              <Checkbox id="all_rows"
+                size="sm"
+                boxClassName="size-4 border-white"
+                rounded="custom"
+                label="" value="all_rows" background="white" svgColor={variant} checked={allRowsSelected}
+
+              />
+            </th>}
             {columns.map((column, index) => (
               <th
                 key={String(column.key)}
@@ -263,32 +335,68 @@ const Table = <T,>({
               >
                 <div className="flex justify-center items-center flex-row gap-1">
                   {column.label}
-                  {sortLoading ? sortConfig?.key === column.key && <span className="scale-50">{sortLoader || <Loader size="sm" variant="white" />}</span> : sortConfig?.key === column.key && (sortConfig?.direction === "asc" ? upSortIcon ? upSortIcon :
-                    <svg width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M6 0L12.0622 6.75H-0.0621777L6 0Z" fill="white" />
-                    </svg>
-
-
-                    : downSortIcon ? downSortIcon : <svg width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M6 7L-0.0621777 0.25H12.0622L6 7Z" fill="white" />
-                    </svg>
-                  )}
+                  {sortLoading ? sortConfig?.key === column.key && <span className="scale-50">{sortLoader || <Loader size="sm" variant="white" />}</span> : sortConfig?.key === column.key && (
+                    sortIcon ? <span
+                      className={cn({
+                        " rotate_animation_reverse": sortConfig?.direction === "asc",
+                        " rotate_animation": sortConfig?.direction === "desc",
+                      })}
+                    >
+                      {sortIcon}
+                    </span> :
+                      <svg width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        className={cn(
+                          "transition-all   duration-300 ", {
+                          " rotate_animation_reverse": sortConfig?.direction === "asc",
+                          " rotate_animation": sortConfig?.direction === "desc",
+                        }
+                        )}
+                      >
+                        <path d="M6 0L12.0622 6.75H-0.0621777L6 0Z" fill="white" />
+                      </svg>
+                  )
+                  }
                 </div>
               </th>
             ))}
           </tr>
         </thead>
+
         <tbody className={cn(
-          TableTextColorVariants({ textColor })
+          TableTextColorVariants({ textColor }),
+
         )}>
           {!loading && paginatedData.map((row, rowIndex) => (
-            <tr key={rowIndex} className="border-b hover:bg-gray-100 hover:text-black transition duration-200 ease-in-out ">
+            <tr key={rowIndex} className={
+              cn(
+                "border-b  transition duration-200 ease-in-out ",
+                selectedRows.includes(rowIndex) ? TdColorVariants({ variant }) : " ",
+                TdColorVariants({ hoverVariant: variant }),
+
+              )
+            }>
               {enableRowSelect && (
-                <td>
-                  <input
+                <td
+                  onClick={() => {
+                    toggleRowSelect(rowIndex)
+                  }}
+                  className="cursor-pointer"
+                >
+                  {/* <input
                     type="checkbox"
                     checked={selectedRows.includes(rowIndex)}
                     onChange={() => toggleRowSelect(rowIndex)}
+                  /> */}
+                  <Checkbox
+                    label=""
+                    id={`checkbox_${rowIndex}`}
+                    boxClassName="size-4"
+                    rounded="custom"
+                    color={variant}
+                    value={`${rowIndex}`}
+                    background={variant}
+                    checked={selectedRows.includes(rowIndex)}
+
                   />
                 </td>
               )}
@@ -296,7 +404,9 @@ const Table = <T,>({
                 <td key={String(column.key)} className="px-4 py-2">
                   {column.render
                     ? column.render(row[column.key], row)
-                    : String(row[column.key])}
+                    : <p
+                      title={String(row[column.key])}
+                      className="line-clamp-1">{String(row[column.key])}</p>}
                 </td>
               ))}
             </tr>
@@ -307,7 +417,10 @@ const Table = <T,>({
             <tr className="" key={`loading-${index}`}>
               {enableRowSelect && (
                 <td className="border-b  transition duration-200 ease-in-out p-2">
-                  <div className="  rounded-sm h-[2rem]   bg-gray-200 animate-pulse">
+                  <div className={cn(
+                    "  rounded-sm h-[2rem] opacity-60  animate-pulse",
+                    TdColorVariants({ variant: variant })
+                  )}>
 
                   </div>
                 </td>
@@ -315,7 +428,10 @@ const Table = <T,>({
               {
                 columns.map((column, index) => (
                   <td key={`${String(column.key)}-${index}`} className="border-b  transition duration-200 ease-in-out p-2" >
-                    <div className="  rounded-sm h-[2rem]   bg-gray-200 animate-pulse">
+                    <div className={cn(
+                      "  rounded-sm h-[2rem] opacity-60  animate-pulse",
+                      TdColorVariants({ variant: variant })
+                    )}>
 
                     </div>
                   </td>
@@ -372,7 +488,7 @@ const Table = <T,>({
                       triggerColor="white"
                       itemHandler={(value) => {
                         if (rowCount.handler) rowCount.handler(value.value)
-                      }} colorItem='primary' position='left' content={rowCount.cotent || [{ value: 10, name: 10 },
+                      }} colorItem={variant} position='left' content={rowCount.cotent || [{ value: 10, name: 10 },
                       { value: 20, name: 20 },
                       { value: 50, name: 50 },
                       ]} name='filter_button' /></div>}
@@ -391,3 +507,4 @@ const Table = <T,>({
 };
 
 export default Table;
+

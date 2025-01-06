@@ -17,6 +17,7 @@ type CheckboxProps = {
   svgColor?: SvgColorType;
   background?: Variant;
   rounded?: rounded,
+  boxClassName?: string
 };
 
 const checkboxStyles = cva('flex items-center gap-2 cursor-pointer ', {
@@ -49,15 +50,15 @@ const checkboxStyles = cva('flex items-center gap-2 cursor-pointer ', {
       white: 'bg-white ',
     },
     svgColor: {
-      primary: 'stroke-primary',
-      secondary: 'stroke-secondary',
-      warning: 'stroke-warning',
-      danger: 'stroke-error',
-      inverse: 'stroke-gray-600',
-      success: 'stroke-success',
-      purple: 'stroke-purple-500',
-      default: 'stroke-gray-500',
-      white: 'stroke-white',
+      primary: 'fill-primary',
+      secondary: 'fill-secondary',
+      warning: 'fill-warning',
+      danger: 'fill-error',
+      inverse: 'fill-gray-600',
+      success: 'fill-success',
+      purple: 'fill-purple-500',
+      default: 'fill-gray-500',
+      white: 'fill-white',
     },
     rounded: {
       sm: "rounded-sm",
@@ -68,8 +69,7 @@ const checkboxStyles = cva('flex items-center gap-2 cursor-pointer ', {
     }
   },
   defaultVariants: {
-    color: "default"
-
+    
   },
 });
 
@@ -78,6 +78,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   label,
   value,
   svgColor,
+  boxClassName,
   svg,
   onChange,
   checked = false,
@@ -93,17 +94,18 @@ const Checkbox: React.FC<CheckboxProps> = ({
   };
 
   return (
-    <div>
+    <div className='flex justify-center items-center gap-2'>
       <div
         className={cn(
           'flex justify-center items-center w-5 h-5 border-[0.104rem]  ',
           checkboxStyles({
-            color: color ? background : color,
+            color,
             rounded,
             background: checked ? background : undefined,
-          })
+          }),
+          boxClassName
         )}
-        onClick={handleChange}
+        // onClick={handleChange}
       >
         <input
           type="checkbox"
@@ -111,21 +113,22 @@ const Checkbox: React.FC<CheckboxProps> = ({
           value={value}
           checked={checked}
           className={cn('hidden')}
+          onChange={handleChange}
         />
         {checked && (
           svg || (
-            
+
             <svg
               width="9"
               height="7"
               viewBox="0 0 9 7"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className={cn(checkboxStyles({ svgColor }))}
+
             >
               <path
                 d="M2.8 4.2998L1.2 2.6998L0 3.8998L2.8 6.6998L8 1.4998L6.8 0.299805L2.8 4.2998Z"
-                fill="white"
+                className={cn("fill-white", checkboxStyles({ svgColor }))}
               />
             </svg>
           )
