@@ -18,5 +18,5 @@ export { Checkbox } from "./checkbox"
 export { Tabs } from "./tabs"
 export { Details } from "./details"
 export { ToastProvider, toast } from "./toast"
-
-
+export { DetailsDownWard } from "./detailsdownward"
+export { ChoiceButton } from "./choicebutton"
