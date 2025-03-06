@@ -4,6 +4,7 @@ import { ColorType } from "../../types/GlobalType";
 import { cn } from "../../utils";
 
 type VariantType = ColorType;
+
 const TabButtonVariants = cva(
     "tab-button text-base p-3 cursor-pointer transition-all duration-300 font-bold w-full",
     {
@@ -51,6 +52,11 @@ const TabButtonVariants = cva(
                 lg: "rounded-lg",
                 full: "rounded-full",
             },
+            styles: {
+                flat: "bg-transparent border-none",
+                bordered: "border border-gray-300 bg-transparent",
+                underlined: "border-b border-gray-300 bg-transparent",
+                faded: "border border-gray-300 bg-gray-100/50"},
         },
         compoundVariants: [
             { active: true, variant: "primary", className: "bg-primary/5 text-primary" },
@@ -61,11 +67,10 @@ const TabButtonVariants = cva(
             { active: true, variant: "inverse", className: "bg-gray-600/5 text-gray-600" },
             { active: true, variant: "purple", className: "bg-purple-500/5 text-purple-500" },
             { active: true, variant: "default", className: "bg-gray-500/5 text-gray-500" },
-            {
-                active: true, variant: "white", className:
-                    "bg-white text-primary"
-            },
+            {active: true,  variant: "white", className:"bg-white text-primary" },
+           
         ],
+    
         defaultVariants: {
             active: false,
             textcolor: "default",
@@ -105,6 +110,7 @@ const TabContentVariants = cva("tab-content px-6 border-2 border-red-400 text-ce
 
 type TabProps = {
     tabs: {
+        styles?: "flat" | "bordered" | "underlined" | "faded";
         name: string;
         content: string;
         variant?: VariantType;
@@ -121,7 +127,7 @@ const Tabs: React.FC<TabProps> = ({ tabs, active }) => {
 
     return (
         <div className="tabs-container">
-            <div className="tab-buttons flex ju">
+            <div className="tab-buttons flex ">
                 {tabs.map((tab, index) => (
                     <button
                         key={index}
@@ -130,6 +136,7 @@ const Tabs: React.FC<TabProps> = ({ tabs, active }) => {
                                 active: activeTab === index,
                                 textcolor: tab.textcolor || "default",
                                 variant: tab.variant,
+                                styles:tab.styles
                             }),
                             {
                                 [`border-b-4 ${tab.bordercolor}`]: activeTab === index,
@@ -150,10 +157,8 @@ const Tabs: React.FC<TabProps> = ({ tabs, active }) => {
                             color: tab.color || "default",
                             contentcolor: tab.contentcolor || "default",
                         }),
-                        {
-                            "opacity-100 transform scale-100 block border-none": activeTab === index,
-                        }
-                    )}
+                        {"opacity-100 transform scale-100 block border-none": activeTab === index,
+                        })}
                 >
                     <p>{tab.name}</p>
                     <p>{tab.content}</p>
