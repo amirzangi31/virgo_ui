@@ -5,7 +5,7 @@ import { SizeType } from '../../types/GlobalType';
 import { FieldError, UseFormRegisterReturn } from 'react-hook-form';
 
 const InputVariants = cva(
-  "placeholder:text-gray placeholder:px-3 w-full rounded-full text-right transition-all duration-300 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed",
+  "placeholder:text-gray placeholder: text-md placeholder:px-3 w-full rounded-full text-right transition-all duration-300 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed",
   {
     variants: {
       size: {
@@ -76,7 +76,7 @@ export default function Input({
   register,
 }: InputProps): JSX.Element {
   return (
-    <div className="flex flex-col relative">
+    <div className="flex flex-col relative w-full">
       {label && (
         <label
           htmlFor={name}

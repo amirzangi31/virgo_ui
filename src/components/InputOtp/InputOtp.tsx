@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cva } from "class-variance-authority";
 import cn from "../../utils/cnFun";
-import { BorderStyle, RoundedType, SizeIOnputOtp } from "../../types/GlobalType";
+import { BorderStyle, ColorType, RoundedType, SizeIOnputOtp } from "../../types/GlobalType";
 
 type PartialInputProps = Pick<
   React.ComponentPropsWithoutRef<"input">,
@@ -22,6 +22,7 @@ type Props = {
 type OtpInputVariantsProps = {
   rounded?: RoundedType;
   borderStyle?: BorderStyle;
+  color?: ColorType;
   variant?: "flat" | "bordered" | "underlined" | "faded";
 };
 
@@ -36,15 +37,15 @@ const OtpInputVariants = cva(
         full: "rounded-full",
       },
       color: {
-        primary: "border-primary bg-primary/40 ",
-        secondary: "border-secondary bg-secondary/40",
-        warning: "border-warning bg-warning/40",
-        danger: "border-error bg-error/40",
-        inverse: "border-gray-600 bg-gray-600/40",
-        success: "border-success bg-success/40",
-        purple: "border-purple-500 bg-purple-500/40",
-        default: "border-gray-500 bg-gray-500/40",
-        white: "border-white bg-white/40",
+        primary: "border-primary bg-primary/20 ",
+        secondary: "border-secondary bg-secondary/20",
+        warning: "border-warning bg-warning/20",
+        danger: "border-error bg-error/20",
+        inverse: "border-gray-600 bg-gray-600/20",
+        success: "border-success bg-success/20",
+        purple: "border-purple-500 bg-purple-500/20",
+        default: "border-gray-500 bg-gray-500/20",
+        white: "border-white bg-white/20",
       },
       borderStyle: {
         solid: "border border-gray-300",
@@ -74,6 +75,7 @@ const OtpInput = (props: Props & OtpInputVariantsProps) => {
     sizeinput = "md",
     rounded,
     borderStyle,
+    color,
     variant, 
     segmentStyle = [
       "relative",
@@ -169,6 +171,7 @@ const OtpInput = (props: Props & OtpInputVariantsProps) => {
                 rounded,
                 borderStyle,
                 variant,
+                color
               }),
               sizeClass,
               className,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cva } from "class-variance-authority";
 import { ColorType } from "../../types/GlobalType";
 import { cn } from "../../utils";
@@ -119,12 +119,23 @@ type TabProps = {
         contentcolor?: ColorType;
         bordercolor?: ColorType;
     }[];
-    active?: boolean;
+    selectedIndex?: number;
+    onSelect?: (index: number) => void;
+    sharedValue?: string; // اضافه کردن prop جدید
 };
 
-const Tabs: React.FC<TabProps> = ({ tabs, active }) => {
-    const [activeTab, setActiveTab] = useState(active ? 0 : -1);
+const Tabs: React.FC<TabProps> = ({ tabs, selectedIndex = -1, onSelect ,sharedValue }) => {
+    const [activeTab, setActiveTab] = useState(selectedIndex);
+    useEffect(() => {
+        setActiveTab(selectedIndex);
+    }, [selectedIndex]);
 
+    const handleTabClick = (index: number) => {
+        setActiveTab(index);
+        if (onSelect) {
+            onSelect(index);
+        }
+    };
     return (
         <div className="tabs-container">
             <div className="tab-buttons flex ">
@@ -142,7 +153,7 @@ const Tabs: React.FC<TabProps> = ({ tabs, active }) => {
                                 [`border-b-4 ${tab.bordercolor}`]: activeTab === index,
                             }
                         )}
-                        onClick={() => setActiveTab(index)}
+                        onClick={() => handleTabClick(index)}
                     >
                         {tab.name}
                     </button>
@@ -162,6 +173,7 @@ const Tabs: React.FC<TabProps> = ({ tabs, active }) => {
                 >
                     <p>{tab.name}</p>
                     <p>{tab.content}</p>
+                    {sharedValue && <p>Shared Value: {sharedValue}</p>} {/* نمایش sharedValue */}
                 </div>
             ))}
         </div>
