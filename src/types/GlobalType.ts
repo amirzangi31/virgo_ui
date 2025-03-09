@@ -8,13 +8,14 @@ export type PositionType = "bottom-center" | "top-center" | "center" | "bottom-m
 export type BorderStyle = "solid" | "dashed" | "none"
 export type SizeIOnputOtp = "sm" | "md" | "lg"
 export type FontWeightType = "light" | "normal" | "bold" | "fat"
-export type ShadowType =  'none' | 'sm' | 'md' | 'lg' | 'xl'
+export type ShadowType = 'none' | 'sm' | 'md' | 'lg' | 'xl'
 type TableColumnUi<T> = {
       key: keyof T;
       label: string;
       sortable?: boolean;
       filterable?: boolean;
       width?: string;
+      minWidth?: string
       render?: (value: T[keyof T], row: T) => ReactNode;
 }
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Header from './components/header/Header'
-import { BackButton, Button, Dropdown, Loader, Modal, Pagination, SectionTitle, Sidebar, Table, TextField } from './components'
+import { BackButton, Button, Dropdown, Loader, Modal, Pagination, SectionTitle, Select, Sidebar, Table, TextField } from './components'
 import SidebarHeader from './components/sidebar/SidebarHeader'
 import SidebarItem from './components/sidebar/SidebarItem'
 import SidebarDropdown from './components/sidebar/SidebarDropdown'
@@ -10,6 +10,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { RadioButton } from './components/radioButton'
 import { toast } from './components/toast/toastManager'
 import Tooltip from './components/tooltip/Tooltip'
+import CrudButtons from './components/crudbuttons/CrudButtons'
 
 
 type FormValues = {
@@ -23,9 +24,9 @@ const App = () => {
       const [radioButton, setRadioButton] = useState<string | number>("isCenter")
 
       const columns: TableColumnUi<{ id: number; title: string; body: string; }>[] = [
-            { key: "id", label: "ID", sortable: true, width: "10%" },
-            { key: "title", label: "Title", sortable: true, filterable: true, width: "30%" },
-            { key: "body", label: "Description", sortable: true, width: "60%" },
+            { key: "id", label: "ID", sortable: true, },
+            { key: "title", label: "Title", sortable: true, filterable: true, },
+            { key: "body", label: "Description", sortable: true, },
       ];
 
       const handleRowSelect = (selectedRows: number[]) => {
@@ -175,6 +176,13 @@ const App = () => {
                                     {/* <Tooltip content="lorem cafdaadsf asdf asdf" position='top-center' variant='danger'>
                                           <p className='mx-auto  border border-error rounded-lg w-fit'>×</p>
                                     </Tooltip> */}
+                                    <CrudButtons
+                                          buttons={
+                                                {
+                                                      isDelete: true
+                                                }
+                                          }
+                                    />
                               </div>
                               <Button variant='primary' onClick={() => {
                                     //  const [toasts, setToasts] = useState<ToastManagerType[]>([]);
@@ -216,6 +224,9 @@ const App = () => {
                         }}>
                               show toast
                         </button>
+                        <Modal isOpen={true} position='center' contentClassName='overflow-visible' onClose={() => { }} >
+                              <Select options={[{ label: "1", value: "dasf" }]} />
+                        </Modal>
                   </main>
             </div>
       )

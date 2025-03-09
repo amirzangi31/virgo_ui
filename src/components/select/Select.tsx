@@ -8,7 +8,7 @@ type variant = ColorType
 type size = SizeType
 type svgcolor = SvgColorType
 
-const selectVariants = cva("relative inline-block ", {
+const selectVariants = cva("relative inline-block w-full ", {
     variants: {
         borderstyle: {
             flat: "bg-transparent border-none",
@@ -145,10 +145,9 @@ const selectItemVariants = cva(
 );
 
 type SelectProps = {
-    options: { label: string; value: string }[];
-    value?: string;
-    className?: string;
-    onChange?: (value: string) => void;
+    options: { label: string; value: string | number }[];
+    value?: string | number;
+    onChange?: (value: string | number) => void;
     placeholder?: string;
     rounded?: size;
     position?: "left" | "right" | "center";
@@ -157,7 +156,9 @@ type SelectProps = {
     customMinWidth?: string;
     colorItem?: variant;
     svgColor?: svgcolor;
+    
     borderColor?: ColorType;
+    className?:string;
     textColor?: ColorType;
     underlinedColor?: ColorType;
     icon?: React.ReactNode;
@@ -202,7 +203,7 @@ const Select: React.FC<SelectProps> = ({
         setIsOpen((prev) => !prev);
     };
 
-    const handleOptionClick = (value: string) => {
+    const handleOptionClick = (value: string | number) => {
         if (onChange) {
             onChange(value);
         }
@@ -225,7 +226,7 @@ const Select: React.FC<SelectProps> = ({
                 ref={buttonRef}
                 className={cn(
                     "flex justify-between items-center gap-2 px-4 py-2 transition-all duration-300 w-full min-w-[150px] cursor-pointer",
-                    selectVariants({ borderstyle})
+                    selectVariants({ borderstyle })
                 )}
                 onClick={toggleDropdown}
             >

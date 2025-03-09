@@ -27,6 +27,7 @@ type TableColumn<T> = {
   sortable?: boolean;
   filterable?: boolean;
   width?: string;
+  minWidth?: string
   render?: (value: T[keyof T], row: T) => ReactNode;
 };
 
@@ -208,7 +209,7 @@ const Table = <T,>({
   disabledColumns = [],
   enableRowSelect = false,
   pagination,
-  rowsPerPage = 10,
+  
   onRowSelect,
   tableClassname,
   textColor,
@@ -272,9 +273,9 @@ const Table = <T,>({
 
   const paginatedData = React.useMemo(() => {
     if (!pagination) return sortedData;
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    return sortedData.slice(startIndex, startIndex + rowsPerPage);
-  }, [sortedData, currentPage, rowsPerPage, pagination]);
+    const startIndex = (currentPage - 1) * (rowCount?.count || 10);
+    return sortedData.slice(startIndex, startIndex + (rowCount?.count || 10));
+  }, [sortedData, currentPage, (rowCount?.count || 10), pagination]);
 
 
   const allRowsSelected = React.useMemo(
@@ -333,7 +334,7 @@ const Table = <T,>({
                 style={{ width: column.width || "auto" }}
                 onClick={() => column.sortable && handleSort(column.key)}
               >
-                <div className="flex justify-center items-center flex-row gap-1">
+                <div className="flex justify-center items-center flex-row gap-1" style={{ width: column.minWidth || "auto" }}>
                   {column.label}
                   {sortLoading ? sortConfig?.key === column.key && <span className="scale-50">{sortLoader || <Loader size="sm" variant="white" />}</span> : sortConfig?.key === column.key && (
                     sortIcon ? <span
@@ -401,12 +402,15 @@ const Table = <T,>({
                 </td>
               )}
               {columns.map((column) => (
-                <td key={String(column.key)} className="px-4 py-2">
-                  {column.render
-                    ? column.render(row[column.key], row)
-                    : <p
-                      title={String(row[column.key])}
-                      className="line-clamp-1">{String(row[column.key])}</p>}
+                <td key={String(column.key)} className="px-4 py-2"  >
+                  <div className="text-center" style={{ width: column.minWidth || "auto" }}>
+
+                    {column.render
+                      ? column.render(row[column.key], row)
+                      : <p
+                        title={String(row[column.key])}
+                        className="line-clamp-1 text-center">{String(row[column.key])}</p>}
+                  </div>
                 </td>
               ))}
             </tr>
@@ -467,7 +471,7 @@ const Table = <T,>({
                   },
 
                 )}>
-                  <div className="md:w-1/3 flex justify-start items-center">
+                  <div className=" flex justify-start items-center">
                     {refetch && (
                       <button type="button" className={cn(
                         " ",
@@ -481,8 +485,8 @@ const Table = <T,>({
                         </svg>
                       </button>
                     )}</div>
-                  {pagination ? <div className="md:w-1/3">{pagination}</div> : "test"}
-                  {rowCount && <div className="md:w-1/3 flex justify-end items-center">
+                  {pagination ? <div className="">{pagination}</div> : "test"}
+                  {rowCount && <div className=" flex justify-end items-center">
                     <Dropdown trigger={rowCount.count}
                       contentClassName="bottom-full"
                       triggerColor="white"
