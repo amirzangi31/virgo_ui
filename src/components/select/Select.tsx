@@ -156,8 +156,9 @@ type SelectProps = {
     customMinWidth?: string;
     colorItem?: variant;
     svgColor?: svgcolor;
+    
     borderColor?: ColorType;
-    classname?:string;
+    className?:string;
     textColor?: ColorType;
     underlinedColor?: ColorType;
     icon?: React.ReactNode;
@@ -176,8 +177,8 @@ const Select: React.FC<SelectProps> = ({
     textColor,
     underlinedColor,
     customMinWidth,
+    className = '',
     colorItem,
-    classname,
     icon = <svg width="10" height="16" viewBox="0 0 10 16" fill="none" className=" rotate-180" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 1L8.5 8L1.5 15" strokeWidth="1.5"
 
     ></path></svg>,
@@ -210,7 +211,7 @@ const Select: React.FC<SelectProps> = ({
     };
 
     return (
-        <div className={cn(selectVariants({ borderstyle, borderColor, rounded, textColor, underlinedColor }), "relative", isOpen , classname)}>
+        <div className={cn(selectVariants({ borderstyle, borderColor, rounded, textColor, underlinedColor }),  className, isOpen)}>
             {/* <span 
             
             className="absolute top-0 right-2 -translate-y-1/2 px-3 py-0.5 text-nowrap text-xs  bg-[#E6E9E8] text-gray-500 font-medium transition-all duration-200">
