@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Header from './components/header/Header'
-import { BackButton, Button, Dropdown, Loader, Modal, Pagination, SectionTitle, Sidebar, Table, TextField } from './components'
+import { BackButton, Button, Dropdown, Loader, Modal, Pagination, SectionTitle, Select, Sidebar, Table, TextField } from './components'
 import SidebarHeader from './components/sidebar/SidebarHeader'
 import SidebarItem from './components/sidebar/SidebarItem'
 import SidebarDropdown from './components/sidebar/SidebarDropdown'
@@ -25,7 +25,7 @@ const App = () => {
 
       const columns: TableColumnUi<{ id: number; title: string; body: string; }>[] = [
             { key: "id", label: "ID", sortable: true, },
-            { key: "title", label: "Title", sortable: true, filterable: true,  },
+            { key: "title", label: "Title", sortable: true, filterable: true, },
             { key: "body", label: "Description", sortable: true, },
       ];
 
@@ -224,6 +224,9 @@ const App = () => {
                         }}>
                               show toast
                         </button>
+                        <Modal isOpen={true} position='center' contentClassName='overflow-visible' onClose={() => { }} >
+                              <Select options={[{ label: "1", value: "dasf" }]} />
+                        </Modal>
                   </main>
             </div>
       )
