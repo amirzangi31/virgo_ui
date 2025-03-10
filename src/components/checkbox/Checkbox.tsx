@@ -101,18 +101,18 @@ const Checkbox: React.FC<CheckboxProps> = ({
           checkboxStyles({
             color,
             rounded,
-            background: checked ? background : undefined,
+            background: !checked ? background : undefined,
           }),
           boxClassName
         )}
-        // onClick={handleChange}
+        onClick={handleChange}
       >
         <input
           type="checkbox"
           id={id}
           value={value}
           checked={checked}
-          className={cn('hidden')}
+          className={cn('hidden ')}
           onChange={handleChange}
         />
         {checked && (
@@ -128,7 +128,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
             >
               <path
                 d="M2.8 4.2998L1.2 2.6998L0 3.8998L2.8 6.6998L8 1.4998L6.8 0.299805L2.8 4.2998Z"
-                className={cn("fill-white", checkboxStyles({ svgColor }))}
+                className={cn("fill-white cursor-pointer", checkboxStyles({ svgColor }))}
               />
             </svg>
           )

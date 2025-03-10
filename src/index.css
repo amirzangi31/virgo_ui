@@ -223,3 +223,19 @@ input {
     transform : rotate(0deg)
   }
 }
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
+details .my-icon  {
+  transition: transform 0.3s ease;
+}
+
+details[open] .my-icon {
+  transform: rotate(90deg);
+}

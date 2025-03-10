@@ -13,6 +13,7 @@ type DetailsVariantsProps = {
   variant?: variant;
   minheigh?: size;
   rounded?: rounded;
+  svgColor?: svgColor;
 };
 
 type DetailsProps = DetailsVariantsProps & {
@@ -22,6 +23,7 @@ type DetailsProps = DetailsVariantsProps & {
   svgColor?: svgColor;
   svgText?: svgText;
   iconSvg?: React.ReactNode;
+  svg?: React.ReactNode;
 };
 
 type DetailsVariantsFunction = (props: DetailsVariantsProps) => string;
@@ -80,39 +82,38 @@ export default function Details({
   summary,
   children,
   iconSvg,
+  svg
 }: DetailsProps): JSX.Element {
-  const [isOpen, setIsOpen] = useState(false);
+  
 
   return (
     <details
-      className={cn(DetailsVariants({ variant, minheigh, rounded }), className)}
-      open={isOpen}
-      onClick={() => setIsOpen(!isOpen)}
-      style={{ height: isOpen ? "auto" : undefined }}
-    >
-      <summary className="font-semibold cursor-pointer flex items-center transition-all duration-300 group gap-2">
-        <div className="absolute top-8 -right-[0.2rem] flex -translate-x-1/2 -translate-y-1/2">
-          {iconSvg !== undefined ? iconSvg : null}
-        </div>
-        {summary}
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 10 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className={`transition-transform duration-300 stroke-${svgColor} ${isOpen ? "" : "rotate-90"
-            }`}
-        >
-          <path
-            d="M8.5 15L1.5 8L8.5 1"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </summary>
-      <div className="mt-2">{children}</div>
-    </details>
+    className={cn(DetailsVariants({ variant, minheigh, rounded }), className)}
+  >
+    <summary className="font-semibold cursor-pointer flex items-center transition-all duration-300 group gap-2">
+      <div className="absolute top-8 -right-[0.2rem] flex -translate-x-1/2 -translate-y-1/2">
+        {iconSvg !== undefined ? iconSvg : null}
+      </div>
+      {summary}
+      {
+        svg ? svg : (
+<svg width="10" height="16" viewBox="0 0 10 16" className='size-[20px] my-icon ' fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g transform="rotate(180 5 8)">
+    <path d="M1.5 1L8.5 8L1.5 15" strokeWidth="1.5" strokeLinejoin="round"
+      className={cn(
+        "stroke-primary",
+        DetailsVariants({ svgColor })
+      )}
+    ></path>
+  </g>
+</svg>
+        )
+      }
+    
+    </summary>
+    <div className="mt-2">
+      {children}
+    </div>
+  </details>
   );
 }
