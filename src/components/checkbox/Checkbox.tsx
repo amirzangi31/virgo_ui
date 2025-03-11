@@ -97,7 +97,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
     <div className='flex justify-center items-center gap-2'>
       <div
         className={cn(
-          'flex justify-center items-center w-5 h-5 border-[0.104rem]  ',
+          'flex justify-center items-center min-w-5 h-5 border-[0.104rem]  ',
           checkboxStyles({
             color,
             rounded,

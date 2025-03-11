@@ -1,10 +1,8 @@
-import { ReactNode } from "react";
-import ClientOnlyPortal from "./ClientOnlyPortal";
-import { cn } from "../../utils";
 import { cva } from "class-variance-authority";
-import IconButton from "../ButtonClose/ButtonClose";
 import { PositionType } from '../../types/GlobalType';
-import styles from './index.module.css'
+import { cn } from "../../utils";
+import IconButton from "../ButtonClose/ButtonClose";
+import ClientOnlyPortal from "./ClientOnlyPortal";
 
 
 
@@ -18,7 +16,7 @@ type ContentVariantsProps = {
 }
 
 const ModalVariants: ModalVariantsFunction = cva(
-      "fixed inset-0  backdrop-blur-md backdrop-brightness-50 flex z-10",
+      "fixed inset-0  backdrop-blur-md backdrop-brightness-50 flex z-[11]",
       {
 
             variants: {

@@ -6,7 +6,6 @@ import { ColorType, SizeType, SvgColorType } from '../../types/GlobalType';
 type variant = ColorType;
 type size = SizeType;
 type rounded = SizeType | "full";
-type svgColor = SvgColorType;
 type svgText = SvgColorType;
 
 type DetailsVariantsProps = {
@@ -19,7 +18,7 @@ type DetailsProps = DetailsVariantsProps & {
   className?: string;
   summary: string;
   children: React.ReactNode;
-  svgColor?: svgColor;
+  svgColor?: string;
   svgText?: svgText;
   iconSvg?: React.ReactNode;
 };
@@ -41,17 +40,17 @@ const DetailsVariants: DetailsVariantsFunction = cva(
         default: "bg-gray-500 text-white",
         white: "bg-white text-gray-600 ",
       },
-      svgColor: {
-        primary: "stroke-primary",
-        secondary: "stroke-secondary",
-        warning: "stroke-warning",
-        danger: "stroke-error",
-        inverse: "stroke-gray-600",
-        success: "stroke-success",
-        purple: "stroke-purple-500",
-        default: "stroke-gray-500",
-        white: "stroke-white"
-      },
+      // svgColor: {
+      //   primary: "stroke-primary",
+      //   secondary: "stroke-secondary",
+      //   warning: "stroke-warning",
+      //   danger: "stroke-error",
+      //   inverse: "stroke-gray-600",
+      //   success: "stroke-success",
+      //   purple: "stroke-purple-500",
+      //   default: "stroke-gray-500",
+      //   white: "stroke-white"
+      // },
       rounded: {
         sm: "rounded-sm",
         md: "rounded-md",
@@ -101,14 +100,20 @@ export default function Details({
           viewBox="0 0 10 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className={`transition-transform duration-300 stroke-${svgColor} ${isOpen ? "" : "rotate-90"
-            }`}
+          className={cn(
+            `transition-transform duration-300  `,
+            {
+              "-rotate-90": isOpen
+            },
+
+          )}
         >
           <path
             d="M8.5 15L1.5 8L8.5 1"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
+            className={cn(svgColor)}
           />
         </svg>
       </summary>
