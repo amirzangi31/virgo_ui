@@ -6,7 +6,6 @@ import { ColorType, SizeType, SvgColorType } from '../../types/GlobalType';
 type variant = ColorType;
 type size = SizeType;
 type rounded = SizeType | "full";
-type svgColor = SvgColorType;
 type svgText = SvgColorType;
 
 type DetailsVariantsProps = {
@@ -20,7 +19,7 @@ type DetailsProps = DetailsVariantsProps & {
   className?: string;
   summary: string;
   children: React.ReactNode;
-  svgColor?: svgColor;
+  svgColor?: string;
   svgText?: svgText;
   iconSvg?: React.ReactNode;
   svg?: React.ReactNode;
@@ -43,17 +42,17 @@ const DetailsVariants: DetailsVariantsFunction = cva(
         default: "bg-gray-500 text-white",
         white: "bg-white text-gray-600 ",
       },
-      svgColor: {
-        primary: "stroke-primary",
-        secondary: "stroke-secondary",
-        warning: "stroke-warning",
-        danger: "stroke-error",
-        inverse: "stroke-gray-600",
-        success: "stroke-success",
-        purple: "stroke-purple-500",
-        default: "stroke-gray-500",
-        white: "stroke-white"
-      },
+      // svgColor: {
+      //   primary: "stroke-primary",
+      //   secondary: "stroke-secondary",
+      //   warning: "stroke-warning",
+      //   danger: "stroke-error",
+      //   inverse: "stroke-gray-600",
+      //   success: "stroke-success",
+      //   purple: "stroke-purple-500",
+      //   default: "stroke-gray-500",
+      //   white: "stroke-white"
+      // },
       rounded: {
         sm: "rounded-sm",
         md: "rounded-md",
@@ -88,6 +87,7 @@ export default function Details({
 
   return (
     <details
+<<<<<<< HEAD
     className={cn(DetailsVariants({ variant, minheigh, rounded }), className)}
   >
     <summary className="font-semibold cursor-pointer flex items-center transition-all duration-300 group gap-2">
@@ -115,5 +115,42 @@ export default function Details({
       {children}
     </div>
   </details>
+=======
+      className={cn(DetailsVariants({ variant, minheigh, rounded }), className)}
+      open={isOpen}
+      onClick={() => setIsOpen(!isOpen)}
+      style={{ height: isOpen ? "auto" : undefined }}
+    >
+      <summary className="font-semibold cursor-pointer flex items-center transition-all duration-300 group gap-2">
+        <div className="absolute top-8 -right-[0.2rem] flex -translate-x-1/2 -translate-y-1/2">
+          {iconSvg !== undefined ? iconSvg : null}
+        </div>
+        {summary}
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 10 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className={cn(
+            `transition-transform duration-300  `,
+            {
+              "-rotate-90": isOpen
+            },
+
+          )}
+        >
+          <path
+            d="M8.5 15L1.5 8L8.5 1"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={cn(svgColor)}
+          />
+        </svg>
+      </summary>
+      <div className="mt-2">{children}</div>
+    </details>
+>>>>>>> 2d1b5e0dc143ce932efa172bb09f6918ea4f87cd
   );
 }

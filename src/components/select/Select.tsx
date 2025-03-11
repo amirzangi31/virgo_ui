@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { cva } from "class-variance-authority";
 import cn from "../../utils/cnFun";
 import { ColorType, SizeType, SvgColorType } from "../../types/GlobalType";
+import { Loader } from "../Loader";
 
 
 type variant = ColorType
 type size = SizeType
 type svgcolor = SvgColorType
 
-const selectVariants = cva("relative inline-block w-full ", {
+const selectVariants = cva("relative inline-block  ", {
     variants: {
         borderstyle: {
             flat: "bg-transparent border-none",
@@ -112,7 +113,7 @@ const selectContentVariants = cva(
 );
 
 const selectItemVariants = cva(
-    "p-2 cursor-pointer transition-colors duration-200 rounded w-full flex justify-center items-center text-center",
+    "p-2 cursor-pointer transition-colors min-h-[2.5rem] duration-200 rounded w-full flex justify-center items-center text-center",
     {
         variants: {
             hoverable: {
@@ -156,9 +157,13 @@ type SelectProps = {
     customMinWidth?: string;
     colorItem?: variant;
     svgColor?: svgcolor;
-    
+    asyncInfo?: {
+        loading: boolean,
+        asyncHandler: () => void,
+        hasMore: boolean
+    }
     borderColor?: ColorType;
-    className?:string;
+    className?: string;
     textColor?: ColorType;
     underlinedColor?: ColorType;
     icon?: React.ReactNode;
@@ -175,6 +180,7 @@ const Select: React.FC<SelectProps> = ({
     svgColor,
     rounded,
     textColor,
+    asyncInfo,
     underlinedColor,
     customMinWidth,
     className = '',
@@ -211,7 +217,7 @@ const Select: React.FC<SelectProps> = ({
     };
 
     return (
-        <div className={cn(selectVariants({ borderstyle, borderColor, rounded, textColor, underlinedColor }),  className, isOpen)}>
+        <div className={cn(selectVariants({ borderstyle, borderColor, rounded, textColor, underlinedColor }), className, isOpen)}>
             {/* <span 
             
             className="absolute top-0 right-2 -translate-y-1/2 px-3 py-0.5 text-nowrap text-xs  bg-[#E6E9E8] text-gray-500 font-medium transition-all duration-200">
@@ -231,7 +237,7 @@ const Select: React.FC<SelectProps> = ({
                 onClick={toggleDropdown}
             >
                 <div className="flex justify-between items-center w-full gap-2">
-                    <span className="truncate">
+                    <span className="truncate flex-1">
                         {value ? options.find((opt) => opt.value === value)?.label : placeholder}
                     </span>
                     <div className={cn(`transition-transform duration-300 ${isOpen ? 'rotate-90' : ''}`, selectVariants({ svgColor }))}>
@@ -263,7 +269,7 @@ const Select: React.FC<SelectProps> = ({
                             key={option.value}
                             className={cn(
                                 selectItemVariants({ color: colorItem }),
-                                "w-full truncate text-left  text-black",
+                                "w-full truncate text-left  text-black ",
 
                             )}
                             title={option.label}
@@ -271,6 +277,9 @@ const Select: React.FC<SelectProps> = ({
                             {option.label}
                         </button>
                     ))}
+                    {
+                        asyncInfo ? asyncInfo.hasMore ? <button className="flex justify-center items-center text-center w-full text-primary text-sm" onClick={asyncInfo.asyncHandler}  >{asyncInfo.loading ? <Loader /> : "بارگذاری بیشتر"}</button> : null : null
+                    }
                 </div>
             </div>
         </div>
