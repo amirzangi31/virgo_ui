@@ -68,9 +68,7 @@ const TabButtonVariants = cva(
             { active: true, variant: "purple", className: "bg-purple-500/5 text-purple-500" },
             { active: true, variant: "default", className: "bg-gray-500/5 text-gray-500" },
             {active: true,  variant: "white", className:"bg-white text-primary" },
-           
         ],
-    
         defaultVariants: {
             active: false,
             textcolor: "default",
@@ -118,27 +116,30 @@ type TabProps = {
         textcolor?: ColorType;
         contentcolor?: ColorType;
         bordercolor?: ColorType;
+        disabled?: boolean;
     }[];
     selectedIndex?: number;
     onSelect?: (index: number) => void;
-    sharedValue?: string; // اضافه کردن prop جدید
+    sharedValue?: string;
 };
 
-const Tabs: React.FC<TabProps> = ({ tabs, selectedIndex = -1, onSelect ,sharedValue }) => {
+const Tabs: React.FC<TabProps> = ({ tabs, selectedIndex = -1, onSelect , sharedValue }) => {
     const [activeTab, setActiveTab] = useState(selectedIndex);
     useEffect(() => {
         setActiveTab(selectedIndex);
     }, [selectedIndex]);
 
     const handleTabClick = (index: number) => {
+        if (tabs[index].disabled) return;
         setActiveTab(index);
         if (onSelect) {
             onSelect(index);
         }
     };
+
     return (
-        <div className="tabs-container">
-            <div className="tab-buttons flex ">
+        <div className="tabs-container" role="tablist">
+            <div className="tab-buttons flex">
                 {tabs.map((tab, index) => (
                     <button
                         key={index}
@@ -147,13 +148,18 @@ const Tabs: React.FC<TabProps> = ({ tabs, selectedIndex = -1, onSelect ,sharedVa
                                 active: activeTab === index,
                                 textcolor: tab.textcolor || "default",
                                 variant: tab.variant,
-                                styles:tab.styles
+                                styles: tab.styles
                             }),
                             {
                                 [`border-b-4 ${tab.bordercolor}`]: activeTab === index,
+                                'opacity-50 cursor-not-allowed': tab.disabled,
                             }
                         )}
                         onClick={() => handleTabClick(index)}
+                        disabled={tab.disabled}
+                        role="tab"
+                        aria-selected={activeTab === index}
+                        aria-disabled={tab.disabled}
                     >
                         {tab.name}
                     </button>
@@ -168,12 +174,14 @@ const Tabs: React.FC<TabProps> = ({ tabs, selectedIndex = -1, onSelect ,sharedVa
                             color: tab.color || "default",
                             contentcolor: tab.contentcolor || "default",
                         }),
-                        {"opacity-100 transform scale-100 block border-none": activeTab === index,
-                        })}
+                        {"opacity-100 transform scale-100 block border-none": activeTab === index}
+                    )}
+                    role="tabpanel"
+                    hidden={activeTab !== index}
                 >
                     <p>{tab.name}</p>
                     <p>{tab.content}</p>
-                    {sharedValue && <p>Shared Value: {sharedValue}</p>} {/* نمایش sharedValue */}
+                    {sharedValue && <p>Shared Value: {sharedValue}</p>}
                 </div>
             ))}
         </div>
